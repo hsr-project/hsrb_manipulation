@@ -38,7 +38,6 @@ def generate_launch_description():
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/hsrb_planner.launch.py']),
-            launch_arguments={'description_package': 'hsrc_description',
-                              'description_file': 'hsrc1s.urdf.xacro',
+            launch_arguments={'description_file': 'hsrc1s.urdf.xacro',
                               'robot_collision_config': 'collision_pair_hsrc.xml',
                               'ik_plugin': 'hsrb_analytic_ik/HsrcIKSolver'}.items())])
