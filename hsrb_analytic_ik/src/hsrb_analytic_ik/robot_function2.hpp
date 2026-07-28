@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -40,7 +40,7 @@ DAMAGE.
 namespace opt {
 
 /**
- * Input for the objective function for IK optimization
+ * Input for the objective function of IK optimization
  * Current joint angles, etc.
  */
 struct RobotFunction2Request {
@@ -52,19 +52,19 @@ struct RobotFunction2Request {
   double R31, R32, R33, pz;
 
   /**
-   * Diagonal elements of the weight matrix (diagonal matrix) w_i (i=0..7)
+   * Diagonal components w_i (i=0..7) of the weight matrix (diagonal matrix)
    */
   double w0, w1, w2, w3, w4, w5, w6, w7;
 
   /**
-   * Reference value of parameters θ^ref_i (i=0..7)
+   * Reference values of parameters θ^ref_i (i=0..7)
    */
   double r0, r1, r2, r3, r4, r5, r6, r7;
 };
 
 /**
  * Output of the objective function for IK optimization
- * Result of IK, etc.
+ * Results of IK, etc.
  */
 struct RobotFunction2Response {
   /**
@@ -79,12 +79,12 @@ struct RobotFunction2Response {
  *
  * When x = (θ_2, θ_4),
  * f(x) = || W * ( θ^ref(x) - θ(x) ) ||^2
- * it is.
+ * .
  */
 class RobotFunction2 {
  public:
   /**
-   * Type of penalty to add.
+   * Type of penalty to be added.
    */
   enum PenaltyType {
     /**
@@ -93,14 +93,14 @@ class RobotFunction2 {
     PenaltyNone = 0,
 
     /**
-     * For infeasible regions, it becomes a large value,
-     * and is set to a larger value the more it exceeds the region.
+     * For infeasible regions, the value becomes very large,
+     * The value increases as it goes further out of the region.
      */
     PenaltyBigDiscontinuous = 1,
 
     /**
      * For infeasible regions,
-     * it becomes a larger value the more it exceeds the region,
+     * The value increases as it goes further out of the region,
      * but continuity is maintained.
      */
     PenaltyBigProportional = 2,
@@ -140,7 +140,7 @@ class RobotFunction2 {
   }
 
   /**
-   * Determines whether it is a feasible point based on current member variables.
+   * Determines whether it is a feasible point based on the current member variables.
    */
   bool IsFeasibleFromMembers() {
     return ((parameter_.t3_min <= response_.t3 && response_.t3 <= parameter_.t3_max) &&
@@ -151,7 +151,7 @@ class RobotFunction2 {
   }
 
   /**
-   * Forcefully pulls back into the feasible region.
+   * Forces it back into the feasible region.
    */
   void ForceFeasible() {
     if (response_.t4 < parameter_.t4_min) {
@@ -182,41 +182,41 @@ class RobotFunction2 {
   }
 
   /**
-   * Retrieves function value.
+   * Retrieves the function value.
    */
   double Value(const Vector2& x) {
-    // Calculate other θ_i from θ_2, θ_4.
+    // Calculates other θ_i from θ_2, θ_4.
     CalculateTheta_(x);
 
     return ValueFromMembers();
   }
 
   /**
-   * Retrieves the function value based on the currently set t_i (i=0,...,7).
+   * Retrieves the function value from the currently set t_i (i=0,..,7).
    */
   double ValueFromMembers() {
     if (penalty_type_ == PenaltyBigDiscontinuous) {
       // When within the feasible region
       if (IsFeasibleFromMembers()) {
-        // Calculate the function value.
+        // Calculates the function value.
         return ValueWithoutPenaltyFromMembers();
       } else {
-        // If outside the feasible region, apply a discontinuous barrier according to the amount exceeded.
-        // If the penalty is too large, it may exceed the precision range of double,
-        // which would prevent optimization from working properly, so be careful.
+        // For infeasible regions, applies a discontinuous barrier based on the degree of deviation.
+        // If the penalty magnitude is too large, it may exceed the precision range of double,
+        // causing optimization to not function properly, so be cautious.
         return penalty_coeff_ + GetPenaltyGrade();
       }
     } else if (penalty_type_ == PenaltyBigProportional) {
-      // If outside the feasible region, apply a continuous barrier according to the amount exceeded.
+      // For infeasible regions, applies a continuous barrier based on the degree of deviation.
       return ValueWithoutPenaltyFromMembers() + penalty_coeff_ * GetPenaltyGrade();
     } else {
-      // Calculate the function value.
+      // Calculates the function value.
       return ValueWithoutPenaltyFromMembers();
     }
   }
 
   /**
-   * Calculates the extent to which it deviates from the feasible region, with weighting.
+   * Calculates the weighted deviation from the feasible region.
    * This value is used for penalty calculation.
    */
   double GetPenaltyGrade() {
@@ -233,10 +233,10 @@ class RobotFunction2 {
   }
 
   /**
-   * Calculates the extent to which it deviates from the feasible region, without weighting.
-   * This value is used for determining whether to forcibly pull back to the interior point
-   * when numerical errors cause convergence to an exterior point
-   * in situations where the feasible region forms a straight line.
+   * Calculates the unweighted deviation from the feasible region.
+   * This value is used when the feasible region becomes a straight line,
+   * and convergence to an external point occurs due to calculation errors.
+   * It can be used to determine whether forced retraction to an internal point is permissible.
    */
   double GetOuterGrade() {
     return Plus_(parameter_.t3_min - response_.t3) +
@@ -252,7 +252,7 @@ class RobotFunction2 {
   }
 
   /**
-   * Calculates the penalty-free objective function value based on current member variables.
+   * Calculates the objective function value without penalty based on the current member variables.
    */
   double ValueWithoutPenaltyFromMembers() {
     double V = 0;
@@ -277,13 +277,13 @@ class RobotFunction2 {
   }
 
   /**
-   * Retrieves gradient value.
+   * Retrieves the gradient value.
    */
   Vector2 Gradient(const Vector2& x) {
     response_.t2 = x.v1;  // Receives θ_2.
     response_.t4 = x.v2;  // Receives θ_4.
 
-    // Calculate other θ_i from θ_2, θ_4.
+    // Calculates other θ_i from θ_2, θ_4.
     CalculateTheta_(x);
 
     const double S2 = sin(response_.t2);
@@ -291,29 +291,29 @@ class RobotFunction2 {
     const double S4 = sin(response_.t4);
     const double C4 = cos(response_.t4);
 
-    // Calculate the partial derivative value of t0.
+    // Calculates the partial derivative value of t0.
     double d0_2 = - parameter_.L52 * S2 * S4 + parameter_.L51 * S2 * C4
                   + parameter_.L42 * C2 + parameter_.L41 * S2;
     double d0_4 = parameter_.L52 * C2 * C4 + parameter_.L51 * C2 * S4;
 
-    // Calculate the partial derivative value of t1.
+    // Calculates the partial derivative value of t1.
     double d1_2 = parameter_.L52 * C2 * S4 - parameter_.L51 * C2 * C4
                 + parameter_.L42 * S2 - parameter_.L41 * C2;
     double d1_4 = parameter_.L52 * S2 * C4 + parameter_.L51 * S2 * S4;
 
-    // Calculate the partial derivative value of t2.
+    // Calculates the partial derivative value of t2.
     double d2_2 = 1;
     double d2_4 = 0;
 
-    // Calculate the partial derivative value of t3.
+    // Calculates the partial derivative value of t3.
     double d3_2 = 0;
     double d3_4 = parameter_.L52 * S4 - parameter_.L51 * C4;
 
-    // Calculate the partial derivative value of t4.
+    // Calculates the partial derivative value of t4.
     double d4_2 = 0;
     double d4_4 = 1;
 
-    // Calculate the partial derivative value of t6.
+    // Calculates the partial derivative value of t6.
     double d6_2;
     double d6_4;
     {
@@ -326,14 +326,14 @@ class RobotFunction2 {
       d6_2 = b * d;
       d6_4 = c * d;
 
-      // Invert ± chosen when calculating t6 to select the sign.
+      // Reverses the sign when calculating t6 to select the sign.
       if (t6_use_plus_) {
         d6_2 = -d6_2;
         d6_4 = -d6_4;
       }
     }
 
-    // Calculate the partial derivative value of t5.
+    // Calculates the partial derivative value of t5.
     double d5_2;
     double d5_4;
     {
@@ -356,7 +356,7 @@ class RobotFunction2 {
       d5_4 = -P2 / (Q2 + R2);
     }
 
-    // Calculate the partial derivative value of t7.
+    // Calculates the partial derivative value of t7.
     double d7_2 = 0;
     double d7_4 = 0;
     {
@@ -385,7 +385,7 @@ class RobotFunction2 {
       d7_4 = -P4 / (Q4 + U4);
     }
 
-    // Calculate gradient value.
+    // Calculates the gradient value.
     double a0 = request_.w0 * request_.w0 * (request_.r0 - response_.t0);
     double a1 = request_.w1 * request_.w1 * (request_.r1 - response_.t1);
     double a2 = request_.w2 * request_.w2 * (request_.r2 - response_.t2);
@@ -403,12 +403,12 @@ class RobotFunction2 {
 
     g = -2.0 * g;
 
-    // Return the calculated gradient in the absence of penalty.
+    // Returns the calculated gradient if there is no penalty.
     if (penalty_type_ == PenaltyNone) {
       return g;
     }
 
-    // Calculate gradient according to the degree of deviation from feasible region.
+    // Calculates the gradient based on the degree of deviation from the feasible region.
     double h2 = 0;
     double h4 = 0;
 
@@ -454,11 +454,11 @@ class RobotFunction2 {
 
     Vector2 h(h2, h4);
 
-    // In case of discontinuous penalty
+    // In the case of a discontinuous penalty
     if (penalty_type_ == PenaltyBigDiscontinuous) {
       return h;
     } else if (penalty_type_ == PenaltyBigProportional) {
-    // In case of continuous penalty
+    // In the case of a continuous penalty
       return g + penalty_coeff_ * h;
     } else {
       return g;
@@ -466,10 +466,10 @@ class RobotFunction2 {
   }
 
   /**
-   * Narrows down the possible range of θ4 based on the restriction range of θ3.
+   * Narrows the possible range of θ4 based on the constraint range of θ3.
    *
-   * @param lower Returns the lower limit of θ4. It will be a value above t4_min.
-   * @param upper Returns the upper limit of θ4. It will be a value below t4_max.
+   * @param lower Returns the lower limit of θ4. It will be a value greater than or equal to t4_min.
+   * @param upper Returns the upper limit of θ4. It will be a value less than or equal to t4_max.
    * @return      Returns false if there is no possible range for θ4.
    *          In this case, lower and upper are undefined.
    */
@@ -492,7 +492,7 @@ class RobotFunction2 {
     double Xmin;
     double Xmax;
 
-    // Determine Xmin and Xmax based on the positional relationships of Cmin, A, Cmax with C1, C2.
+    // Determines Xmin and Xmax based on the positional relationship of Cmin, A, Cmax, C1, and C2.
     if (C1 < Cmin) {
       if (C2 < Cmin) {
         return false;
@@ -526,17 +526,17 @@ class RobotFunction2 {
       return false;
     }
 
-    // Swap if Xmin > Xmax due to calculation errors.
+    // Swaps them if Xmin > Xmax due to calculation errors.
     if (Xmin > Xmax) {
       std::swap(Xmin, Xmax);
     }
 
-    // Ensure Xmin and Xmax do not exceed the range [-1,+1] due to calculation errors,
-    // to avoid generating NaN in the subsequent acos.
+    // Ensures that Xmin and Xmax do not exceed the range of [-1,+1] due to calculation errors,
+    // preventing NaN from being generated in subsequent acos calculations.
     Xmin = std::max(-1.0, Xmin);
     Xmax = std::min(+1.0, Xmax);
 
-    // Determine the lower and upper bounds of θ4 from Xmin, Xmax.
+    // Determines the lower and upper limits of θ4 from Xmin and Xmax.
     lower = std::max(-acos(Xmin), parameter_.t4_min);
     upper = std::min(-acos(Xmax), parameter_.t4_max);
 
@@ -556,8 +556,8 @@ class RobotFunction2 {
   RobotFunction2Response response_;
 
   /**
-   * When t2, t4 are calculated to have t6 adopt a + sign, record true,
-   * and when adopting a - sign, record false.
+   * When the positive sign is adopted for t6 calculated from t2 and t4, it is recorded as true,
+   * and when the negative sign is adopted, it is recorded as false.
    * This member variable is updated in the CalculateTheta function,
    * and used in the Gradient method.
    */
@@ -571,14 +571,14 @@ class RobotFunction2 {
 
   /**
    * Penalty coefficient.
-   * The penalty is applied, multiplied by this coefficient, according to the extent of deviation from the feasible region.
-   * A penalty is applied.
+   * The penalty is applied by multiplying this coefficient by the degree of deviation from the feasible region.
+   * Penalty is applied.
    * The default is 1000.
    */
   double penalty_coeff_;
 
   /**
-   * Calculates t_i (i=0,...,7) from the argument values (θ_2, θ_4).
+   * Calculates t_i (i=0,...,7) from the values of (θ_2, θ_4) passed as arguments.
    */
   void CalculateTheta_(const Vector2& x) {
     response_.t2 = x.v1;  // Receives θ_2.
@@ -612,29 +612,29 @@ class RobotFunction2 {
                    - parameter_.L3
                    + request_.pz;
 
-    // Calculate t6.
+    // Calculates t6.
     {
       double b = -request_.R23 * S2 * S4 - request_.R13 * C2 * S4 + request_.R33 * C4;
       double a = std::sqrt(1 - b * b);
       response_.t6 = std::atan2(a, b);
 
-      // There is an indeterminacy in ± for t6,
-      // but select to minimize the objective function value.
-      // The objective function value also varies with t5, t7, which depend on t6,
-      // so select the sign after calculating t5, t7.
+      // Here, t6 has an indeterminacy of ±,
+      // and it is selected to minimize the objective function value.
+      // Since the objective function value also depends on t5 and t7, which depend on t6,
+      // the sign is selected after calculating t5 and t7.
     }
 
     const double S6 = sin(response_.t6);
 
     if (S6 != 0) {
-      // Since division is costly, multiply by the reciprocal instead.
+      // Division is expensive, so the reciprocal is multiplied instead.
       // const double S6_inv = 1.0 / S6;
 
-      // Division by sin(t6) might lead to numerical instability,
-      // so only the sign is multiplied in the argument of atan2.
+      // Division by sin(t6) is considered numerically unstable,
+      // so only the sign is multiplied in the arguments of atan2.
       const double S6_inv = (S6 > 0) ? 1.0 : -1.0;
 
-      // Calculate t5.
+      // Calculates t5.
       double t5_plus, t5_minus;
       {
         double a = (request_.R23 * C2 - request_.R13 * S2) * S6_inv;
@@ -642,9 +642,9 @@ class RobotFunction2 {
         t5_plus = -std::atan2(a, b);
         t5_minus = -std::atan2(-a, -b);
 
-        // Normalize t5 to fall within the range of [t5_min,t5_max].
-        // As t5 is given as a result of atan2, it is within the range of [-PI,+PI],
-        // so in the worst case, adding 2*PI once is sufficient.
+        // Normalizes t5 to be within the range [t5_min, t5_max].
+        // Since t5 is given as the result of atan2, it is within the range [-PI,+PI],
+        // so adding 2*PI at most once is sufficient.
         if (t5_plus < parameter_.t5_min) {
           t5_plus += 2 * M_PI;
         }
@@ -653,7 +653,7 @@ class RobotFunction2 {
         }
       }
 
-      // Calculate t7.
+      // Calculates t7.
       double t7_plus, t7_minus;
       {
         double a = (-request_.R22 * S2 * S4 - request_.R12 * C2 * S4 + request_.R32 * C4) * S6_inv;
@@ -661,8 +661,8 @@ class RobotFunction2 {
         t7_plus = std::atan2(a, b);
         t7_minus = std::atan2(-a, -b);
 
-        // Normalize t7 to fall within the range of [t7_min,t7_max].
-        // Similar to the case of t5.
+        // Normalizes t7 to be within the range [t7_min, t7_max].
+        // Same as in the case of t5.
         if (t7_plus < parameter_.t7_min) {
           t7_plus += 2 * M_PI;
         }
@@ -671,8 +671,8 @@ class RobotFunction2 {
         }
       }
 
-      // Calculate the objective function value for both positive and negative signs of t6,
-      // and select the sign.
+      // Calculates the objective function values for the positive and negative signs of t6,
+      // and selects the sign.
       {
         double t6_plus = response_.t6;
         double t6_minus = -response_.t6;
@@ -697,13 +697,13 @@ class RobotFunction2 {
         }
       }
     } else {
-      // In the case of t6=0,PI.
-      // t6=PI is outside of the movable range of t6 and is not considered here.
+      // When t6=0 or PI.
+      // t6=PI is outside the movable range of t6, so it is not considered here.
       double a = request_.R11 * S2 - request_.R21 * C2;
       double b = request_.R12 * S2 - request_.R22 * C2;
       double A = std::atan2(a, b);
 
-      // Calculate t5.
+      // Calculates t5.
       response_.t5 = (request_.w7 * request_.w7 * (A - request_.r7)
                       + request_.r5 * request_.w5 * request_.w5) /
                      (request_.w7 * request_.w7 + request_.w5 * request_.w5);
@@ -714,10 +714,10 @@ class RobotFunction2 {
         response_.t5 = std::max(parameter_.t5_min, A - parameter_.t7_max);
       }
 
-      // Calculate t7.
+      // Calculates t7.
       response_.t7 = -response_.t5 + A;
 
-      // Normalization of t5, t7?
+      // Normalization of t5 and t7?
     }
   }
 
@@ -735,8 +735,8 @@ class RobotFunction2 {
 
     double AA_BB_CC = AA_BB - C * C;
 
-    // Because A*A+B*B-C*C might become negative due to calculation errors,
-    // clip it properly.
+    // Since A*A+B*B-C*C can become negative due to calculation errors,
+    // it is appropriately clipped.
     if (AA_BB_CC < 0)
       AA_BB_CC = 0;
 

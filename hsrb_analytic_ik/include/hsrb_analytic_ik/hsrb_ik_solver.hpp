@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -44,7 +44,7 @@ class HsrbIKSolver : public HybridIKSolverBase {
  public:
   HsrbIKSolver();
 
-  /// @param [IN] successor IK to be passed next with Next
+  /// @param [IN] successor IK to be passed next in Next
   explicit HsrbIKSolver(tmc_robot_kinematics_model::IKSolver::Ptr successor);
 
   virtual ~HsrbIKSolver() = default;
@@ -54,7 +54,7 @@ class HsrbBaseYawIKSolver : public BaseYawIKSolver {
  public:
   HsrbBaseYawIKSolver();
 
-  /// @param [IN] successor IK to be passed next with Next
+  /// @param [IN] successor IK to be passed next in Next
   explicit HsrbBaseYawIKSolver(tmc_robot_kinematics_model::IKSolver::Ptr successor);
 
   virtual ~HsrbBaseYawIKSolver() = default;

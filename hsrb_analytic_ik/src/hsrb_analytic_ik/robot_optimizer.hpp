@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -39,8 +39,8 @@ DAMAGE.
 namespace opt {
 
 /**
- * Optimize the bivariate function RobotFunction2 using various methods.
- * Provide the function.
+ * Optimize the two-variable function RobotFunction2 using various methods.
+ * Provides the function.
  */
 class RobotOptimizer {
  public:
@@ -51,7 +51,7 @@ class RobotOptimizer {
    * Entry point for optimization.
    */
   static OptResult Optimize(RobotFunction2& f) {
-    // Parameters resulting in the best outcome during evaluation.
+    // Parameters that yielded the best result during evaluation.
     return OptimizeByHookeAndJeevesMethod(f, 1e-3, 1e-4, 1.0, 1e7);
   }
 
@@ -66,10 +66,10 @@ class RobotOptimizer {
     double t4_lower;
     double t4_upper;
 
-    // Derive the lower and upper bounds of θ4 from the range of θ3.
+    // Derive the lower and upper bounds of θ4 from the constraint range of θ3.
     if (!f.GetTheta4Boundary(t4_lower, t4_upper)) {
-      // If none of the θ4 are feasible, initial value search becomes pointless,
-      // Return the default value for initial values.
+      // If none of θ4 are feasible, initial value search is meaningless.
+      // Return the default value for the initial point.
       return x0;
     }
 
@@ -86,15 +86,15 @@ class RobotOptimizer {
 
       // Enumerate the grid for t2.
       for (int t2_index = 1; t2_index < grid + 2; t2_index++) {
-        // Compute grid coordinates for t2.
+        // Compute the grid coordinates for t2.
         double t2 = t2_lower + t2_grid_width * t2_index;
 
         // Enumerate the grid for t4.
         for (int t4_index = 1; t4_index < grid + 2; t4_index++) {
-          // Compute grid coordinates for t4.
+          // Compute the grid coordinates for t4.
           double t4 = t4_lower + t4_grid_width * t4_index;
 
-          // Obtain the objective function value and feasibility of point (t2, t4).
+          // Obtain the objective function value and feasibility for the point (t2, t4).
           Vector2 x(t2, t4);
           double value = f.Value(x);
           bool feasible = f.IsFeasibleFromMembers();
@@ -127,7 +127,7 @@ class RobotOptimizer {
   }
 
   /**
-   * Hooke-and-Jeeves method
+   * Hooke-and-Jeeves method.
    */
   static OptResult OptimizeByHookeAndJeevesMethod(RobotFunction2& f,
                                                   double epsilon,
@@ -142,7 +142,7 @@ class RobotOptimizer {
     Vector2 x0 = FindInitPoint(f);
     OptResult result = method.Search(f, lineSearch, x0, step);
 
-    // Recompute f using the optimal solution.
+    // Recalculate f with the optimal solution.
     f.Value(method.solution());
 
     return result;

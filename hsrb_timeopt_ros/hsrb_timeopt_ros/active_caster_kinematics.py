@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 # DAMAGE.
 # -*- coding: utf-8 -*-
-u"""Active Caster model"""
+u"""Model of Active Caster"""
 
 from math import cos
 from math import sin
@@ -52,14 +52,14 @@ class ActiveCasterKinematicsTarget(Target):
         u"""Initialize Active Caster by setting parameters.
 
         Args:
-           param: dict with the following 3 elements
+           param: dict with the following three elements
                   caster_offset: offset [m] between the central axis and the wheel axis
                   tread_length: tread [m]
-                  wheel_radius: wheel diameter [m]
+                  wheel_raduis: wheel diameter [m]
         Note:
            Regarding variable names
-           [x,y,a]: Represent x-coordinate, y-coordinate, rotation around the z-axis respectively
-           [0,1,2]: Represent world coordinates, cart coordinates, top board coordinates respectively
+           [x,y,a]: Represent x-coordinate, y-coordinate, and rotation around the z-axis respectively
+           [0,1,2]: Represent world coordinates, cart coordinates, and top plate coordinates respectively
         """
         self.ac_names = ['x02', 'y02', 'a02', 'x01', 'y01', 'a01',
                          'a12', 'x11', 'caster', 'left_wheel', 'right_wheel']
@@ -82,15 +82,15 @@ class ActiveCasterKinematicsTarget(Target):
             self.r = self._DEFAULT_PARAM['wheel_radius']
 
     def update_kinematics(self, point):
-        u"""Update the target's kinematics.
+        u"""Update the kinematics of the target.
 
         Args:
-           point: dict for each state quantity
+           point: dict of each state quantity
         Note:
            Regarding variable names
-           [x,y,a]: Represent x-coordinate, y-coordinate, rotation around the z-axis respectively
-           [0,1,2]: Represent world coordinates, cart coordinates, top board coordinates respectively
-           [d,v,a]: Represent displacement, velocity, acceleration respectively
+           [x,y,a]: Represent x-coordinate, y-coordinate, and rotation around the z-axis respectively
+           [0,1,2]: Represent world coordinates, cart coordinates, and top plate coordinates respectively
+           [d,v,a]: Represent displacement, velocity, and acceleration respectively
         """
         # Calculate the position and orientation of the cart
         (xd02, xv02, xa02) = (point['x02'][i] for i in range(3))
@@ -117,7 +117,7 @@ class ActiveCasterKinematicsTarget(Target):
         else:
             xv11 = yv01 / sin(ad01)
             xa11 = ya01 / sin(ad01) - (yv01 * cos(ad01) * av01 / (sin(ad01) ** 2.0))
-        # Save the wheel speed trajectory from the cart speed trajectory
+        # Save wheel velocity trajectory from cart velocity trajectory
         wl = (2.0 * xv11 - av01 * self.d) / self.r / 2.0
         wr = (2.0 * xv11 + av01 * self.d) / self.r / 2.0
         dwl = (2.0 * xa11 - aa01 * self.d) / self.r / 2.0
@@ -127,14 +127,14 @@ class ActiveCasterKinematicsTarget(Target):
         point['left_wheel'] = [0.0, wl, dwl]
         point['right_wheel'] = [0.0, wr, dwr]
         point['caster'] = [ad12, av12, aa12]
-        # Update the dict for state quantities
+        # Update the dict of state quantities
         self.point = point
 
     def get_dynamics(self):
         u"""Return dynamics parameters (a,b,c,d).
 
         Args:
-            (a,b,c,d) are dicts with ('variable name', 'type of constraint') as keys and values as values.
+            (a,b,c,d) are dicts with keys as ('variable name', 'constraint type') and values as value.
         """
         (a, b, c, d) = ({}, {}, {}, {})
         a['left_wheel', 'acceleration'] = self.point['left_wheel'][1]
@@ -153,14 +153,14 @@ class ActiveCasterKinematicsTarget(Target):
         return (a, b, c, d)
 
     def generate_base_trajectory(self, traj, caster_angle, step):
-        u"""Calculate and add the trajectory 'a12' of the caster axis angle from the command trajectory ('odom_x','odom_y','odom_t') of the vehicle body.
+        u"""Calculate and add the trajectory 'a12' of the caster axis angle from the vehicle's command trajectory ('odom_x','odom_y','odom_t').
 
         Args:
-            traj: command trajectory (TrajectoryDict)
-            caster_angle: initial angle of caster [rad]
-            step: division width of parameters
+            traj: Command trajectory (TrajectoryDict)
+            caster_angle: Initial angle of the caster [rad]
+            step: Division width of the parameter
         """
-        # Generate the trajectory
+        # Generate trajectory
         traj['x01'] = Trajectory(traj.length)
         traj['y01'] = Trajectory(traj.length)
         traj['a01'] = Trajectory(traj.length)
@@ -168,13 +168,13 @@ class ActiveCasterKinematicsTarget(Target):
         traj['a12'] = LinearTrajectory(traj.length)
         traj['left_wheel'] = Trajectory(traj.length)
         traj['right_wheel'] = Trajectory(traj.length)
-        # Define aliases for easier internal processing
+        # Define alias for easier internal processing
         traj['x02'] = traj['odom_x']
         traj['y02'] = traj['odom_y']
         traj['a02'] = traj['odom_t']
         traj['caster'] = LinearTrajectory(traj.length)
 
-        # Integrate from the initial value to save the trajectory of the caster axis
+        # Integrate from the initial value and save the trajectory of the caster axis
         traj['a01'][0] = (traj['a02'](0)[0] - caster_angle, 0, 0)
         size = int((traj.length - 1) / step)
         for i in range(size + 1):
@@ -205,7 +205,7 @@ class ActiveCasterKinematicsTarget(Target):
                 xv11 = yv01 / sin(ad01)
                 xa11 = ya01 / sin(ad01) - (yv01 * cos(ad01) * av01 / (sin(ad01) ** 2))
             traj['x11'][s] = (0, xv11, 0)
-            # Save the wheel speed trajectory from the cart speed trajectory
+            # Save wheel velocity trajectory from cart velocity trajectory
             wl = (2 * xv11 - av01 * self.d) / self.r / 2
             wr = (2 * xv11 + av01 * self.d) / self.r / 2
             dwl = (2 * xa11 - aa01 * self.d) / self.r / 2

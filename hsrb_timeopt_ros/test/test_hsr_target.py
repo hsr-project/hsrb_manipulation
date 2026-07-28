@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -25,12 +25,11 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 # DAMAGE.
 # -*- coding: utf-8 -*-
-u"""Unit test for HSR model."""
+u"""HSR model unit test."""
 
 import unittest
 
 from hsrb_timeopt_ros.hsr_target import HsrKinematicsTarget
-from nose.tools import eq_
 
 
 class HsrTestCase(unittest.TestCase):
@@ -60,9 +59,9 @@ class HsrTestCase(unittest.TestCase):
             'odom_y',
             'odom_t'
         ]
-        eq_(set(EXPECT_LIST), set(hsr.names))
+        self.assertEqual(set(EXPECT_LIST), set(hsr.names))
 
-        # In case of different joint names
+        # When joint names are different
         hsr_mod = HsrKinematicsTarget(joint_names=[
             'joint1', 'joint2', 'joint3'])
         EXPECT_LIST2 = [
@@ -83,4 +82,4 @@ class HsrTestCase(unittest.TestCase):
             'odom_x',
             'odom_y',
             'odom_t']
-        eq_(set(EXPECT_LIST2), set(hsr_mod.names))
+        self.assertEqual(set(EXPECT_LIST2), set(hsr_mod.names))

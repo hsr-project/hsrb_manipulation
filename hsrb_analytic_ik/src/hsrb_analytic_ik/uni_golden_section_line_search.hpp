@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Class that performs unidirectional golden section line search
+/// @brief A class for unidirectional golden section line search
 #ifndef HSRB_ANALYTIC_IK_UNI_GOLDEN_SECTION_LINE_SEARCH_HPP_
 #define HSRB_ANALYTIC_IK_UNI_GOLDEN_SECTION_LINE_SEARCH_HPP_
 
@@ -35,7 +35,7 @@ DAMAGE.
 namespace opt {
 
 /**
- * This is a class that performs unidirectional golden section line search.
+ * This is a class for unidirectional golden section line search.
  */
 class UniGoldenSectionLineSearch {
  public:
@@ -51,24 +51,24 @@ class UniGoldenSectionLineSearch {
         value_(0) {}
 
   /**
-   * Performs search within the interval (0,+∞).
+   * Performs the search within the range (0, +∞).
    *
-   * @param    f       Single variable function
-   * @param    step    Initial value of the search interval [0, step]
+   * @param	f		A single-variable function
+   * @param	step	Initial value of the search interval [0, step]
    * @return
    */
   template<class Function1>
   OptResult Search(Function1& f, double step) {
-    // Initialize search results.
+    // Initialize the search results.
     result_ = OptFail;
     iteration_ = 0;
     solution_ = 0;
     value_ = 0;
 
-    // Create golden section line search.
+    // Create a golden section line search.
     GoldenSectionLineSearch search(max_iteration_, epsilon_);
 
-    // Initialize search interval.
+    // Initialize the search interval.
     const double a = 0;
     double b = step;
 
@@ -81,21 +81,21 @@ class UniGoldenSectionLineSearch {
     value_ = search.value();
     if (result == OptSuccess) {
       result_ = OptSuccess;
-      // Continue to expand the interval and search for the solution.
+      // Continue expanding the interval to search for a solution.
     } else if (result == OptMaxItor) {
       result_ = OptMaxItor;
       return result_;
     }
 
     // If non-quasi-convexity is detected in the first golden section search,
-    // Reduce the step size to ensure quasi-convexity within the interval.
+    // reduce the step size to make the interval quasi-convex.
     if (result == OptFail) {
       // Repeat iteration k.
       for (int k = 2; k <= max_iteration_; k++) {
-        // Reduce the interval.
+        // Shrink the interval.
         b *= 0.5;
 
-        // Perform search.
+        // Perform the search.
         OptResult result = search.Search(f, a, b);
 
         if (result == OptSuccess) {
@@ -115,7 +115,7 @@ class UniGoldenSectionLineSearch {
         // Expand the interval.
         b *= 2;
 
-        // Perform search.
+        // Perform the search.
         OptResult result = search.Search(f, a, b);
 
         if (result == OptSuccess) {
@@ -124,8 +124,8 @@ class UniGoldenSectionLineSearch {
 
           // If the previous solution and the current solution are sufficiently close,
           // choose the one with the smaller objective function value as the solution.
-          // Without this, judging only by the objective function value will lead to
-          // unnecessary iterations due to tiny calculation errors.
+          // Judging only by the objective function value without this step,
+          // may lead to unnecessary iterations due to minor computational errors.
           if (std::abs(solution_ - comparativeSolution) <= epsilon_) {
             if (comparativeValue < value_) {
               iteration_ = search.iteration();
@@ -135,7 +135,7 @@ class UniGoldenSectionLineSearch {
             return result_;
           } else if (comparativeValue < value_) {
             // If the current solution and the previous solution are far apart,
-            // and the objective function value is decreasing, continue the search.
+            // and the objective function value has decreased, continue the search.
             iteration_ = search.iteration();
             solution_ = comparativeSolution;
             value_ = comparativeValue;
@@ -151,34 +151,34 @@ class UniGoldenSectionLineSearch {
         }
       }
 
-      // Since at least one search has been successful, use that as the solution.
+      // Since the search has succeeded at least once, use that as the solution.
       return result_;
     }
   }
 
   /**
-   * Set maximum number of iterations.
+   * Set the maximum number of iterations.
    */
   void set_max_iteration(int max_iteration) {
     max_iteration_ = max_iteration;
   }
 
   /**
-   * Set convergence criteria.
+   * Set the convergence criteria.
    */
   void set_epsilon(double epsilon) {
     epsilon_ = epsilon;
   }
 
   /**
-   * Retrieve search results.
+   * Retrieve the search results.
    */
   OptResult result() const {
     return result_;
   }
 
   /**
-   * Retrieve the number of iterations taken during the search.
+   * Retrieve the number of iterations taken for the search.
    */
   int iteration() const {
     return iteration_;
@@ -208,7 +208,7 @@ class UniGoldenSectionLineSearch {
 
   /**
    * Convergence criteria
-   * (If the width of the uncertain interval falls below this value, consider it converged)
+   * (Convergence is considered achieved if the width of the uncertain interval becomes less than or equal to this value)
    */
   double epsilon_;
 
@@ -218,7 +218,7 @@ class UniGoldenSectionLineSearch {
   OptResult result_;
 
   /**
-   * Holds the number of iterations taken during the search.
+   * Holds the number of iterations taken for the search.
    */
   int iteration_;
 

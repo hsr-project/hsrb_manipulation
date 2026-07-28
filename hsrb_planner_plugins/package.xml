@@ -1,6 +1,6 @@
 <package format="3">
   <name>hsrb_planner_plugins</name>
-  <version>2.1.0</version>
+  <version>3.0.0</version>
   <description>HSR-B RRT planner plugin repository</description>
   <maintainer email="xr-hsr-support@mail.toyota.co.jp">HSR Support</maintainer>
 

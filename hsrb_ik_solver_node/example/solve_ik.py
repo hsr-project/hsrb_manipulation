@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2025 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -107,9 +107,9 @@ class OccupancyGridBroadcaster:
         self._pub = node.create_publisher(OccupancyGrid, 'obstacle_map', 1)
         self._clock = node.get_clock()
 
-    def broadcast(self, map: OccupancyGrid) -> None:
-        map.header.stamp = self._clock.now().to_msg()
-        self._pub.publish(map)
+    def broadcast(self, g_map: OccupancyGrid) -> None:
+        g_map.header.stamp = self._clock.now().to_msg()
+        self._pub.publish(g_map)
 
 
 def generate_points_environment() -> PlanningSceneWorld:
@@ -141,19 +141,19 @@ def generate_points_environment() -> PlanningSceneWorld:
 
 
 def generate_obstacle_grid_map() -> OccupancyGrid:
-    map = OccupancyGrid()
-    map.header.frame_id = 'odom'
-    map.info.resolution = 0.05
-    map.info.width = map.info.height = 40
-    map.info.origin.position.y = -1.0
-    map.data = [0] * (map.info.width * map.info.height)
+    g_map = OccupancyGrid()
+    g_map.header.frame_id = 'odom'
+    g_map.info.resolution = 0.05
+    g_map.info.width = g_map.info.height = 40
+    g_map.info.origin.position.y = -1.0
+    g_map.data = [0] * (g_map.info.width * g_map.info.height)
     for i in range(10):
         for j in range(20):
-            map.data[i + 40 * (j + 10)] = 100
+            g_map.data[i + 40 * (j + 10)] = 100
     for i in range(20):
         for j in range(10):
-            map.data[i + 20 + 40 * (j + 15)] = 100
-    return map
+            g_map.data[i + 20 + 40 * (j + 15)] = 100
+    return g_map
 
 
 def main():
@@ -174,17 +174,17 @@ def main():
 
     for x_i in range(10):
         x = 0.5 + 0.2 * float(x_i)
-        for id in range(2):
+        for i in range(2):
             req = SolveIkWithCollision.Request()
             req.origin_to_hand_goal.position.x = x
             req.origin_to_hand_goal.position.y = 0.0
-            if id == 0:
+            if i == 0:
                 req.origin_to_hand_goal.position.z = 0.7
                 req.origin_to_hand_goal.orientation.x = 0.707
                 req.origin_to_hand_goal.orientation.y = 0.0
                 req.origin_to_hand_goal.orientation.z = 0.707
                 req.origin_to_hand_goal.orientation.w = 0.0
-            elif id == 1:
+            elif i == 1:
                 req.origin_to_hand_goal.position.z = 0.1
                 req.origin_to_hand_goal.orientation.x = 1.0
                 req.origin_to_hand_goal.orientation.y = 0.0

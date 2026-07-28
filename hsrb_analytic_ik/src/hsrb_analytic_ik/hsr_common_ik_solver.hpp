@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief  Common Fast IK functions for HSR
+/// @brief Common functions for high-speed IK for HSR
 #ifndef HSRB_ANALYTIC_IK_HSR_COMMON_IK_SOLVER_HPP_
 #define HSRB_ANALYTIC_IK_HSR_COMMON_IK_SOLVER_HPP_
 

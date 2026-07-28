@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test of the class representing 2x2 matrix
+/// @brief Test for the class representing a 2x2 matrix
 #include <gtest/gtest.h>
 
 #include "matrix2.hpp"
@@ -34,7 +34,7 @@ DAMAGE.
 namespace opt {
 
 TEST(Matrix2_Test, test1) {
-  // Test of the constructor
+  // Test for the constructor
   {
     Matrix2 m(10, 20, 30, 40);
     EXPECT_EQ(10, m.m11);
@@ -43,7 +43,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(40, m.m22);
   }
 
-  // Test of the Zero function
+  // Test for the Zero function
   {
     Matrix2 m(10, 20, 30, 40);
     m.Zero();
@@ -53,7 +53,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(0, m.m22);
   }
 
-  // Test of the Identity function
+  // Test for the Identity function
   {
     Matrix2 m(10, 20, 30, 40);
     m.Identity();
@@ -63,7 +63,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(1, m.m22);
   }
 
-  // Test of the Inv static function
+  // Test for the Inv static function
   {
     Matrix2 A(2, 5, 1, 3);
     Matrix2 B = Matrix2::Inv(A);
@@ -73,7 +73,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(2, B.m22);
   }
 
-  // Test of the Tod static function
+  // Test for the Tod static function
   {
     Vector2 a(3, 7);
     Vector2 b(2, 4);
@@ -84,7 +84,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(28, M.m22);
   }
 
-  // Test of the + operator
+  // Test for the + operator
   {
     Matrix2 A(2, 5, 1, 3);
     Matrix2 B(-1, 3, 2, -7);
@@ -95,7 +95,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(-4, C.m22);
   }
 
-  // Test of the - operator
+  // Test for the - operator
   {
     Matrix2 A(2, 5, 1, 3);
     Matrix2 B(-1, 3, 2, -7);
@@ -106,7 +106,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(10, C.m22);
   }
 
-  // Test of the * operator (matrix×vector)
+  // Test for the * operator (matrix × vector)
   {
     Matrix2 A(2, 5, 1, 3);
     Vector2 b(-1, 2);
@@ -115,7 +115,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(5, x.v2);
   }
 
-  // Test of the * operator (matrix×scalar)
+  // Test for the * operator (matrix × scalar)
   {
     Matrix2 A(2, 5, 1, 3);
     Matrix2 C = A * 0.5;
@@ -125,7 +125,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(1.5, C.m22);
   }
 
-  // Test of the * operator (scalar×matrix)
+  // Test for the * operator (scalar × matrix)
   {
     Matrix2 A(2, 5, 1, 3);
     Matrix2 C = 0.5 * A;
@@ -135,7 +135,7 @@ TEST(Matrix2_Test, test1) {
     EXPECT_EQ(1.5, C.m22);
   }
 
-  // Test of the / operator (matrix / scalar)
+  // Test for the / operator (matrix / scalar)
   {
     Matrix2 A(2, 5, 1, 3);
     Matrix2 C = A / 2.0;

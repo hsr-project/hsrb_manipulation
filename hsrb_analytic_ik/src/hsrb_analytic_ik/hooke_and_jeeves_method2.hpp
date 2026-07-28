@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Class that performs optimization using the Hooke-and-Jeeves method
+/// @brief Class for optimization using the Hooke-and-Jeeves method
 #ifndef HSRB_ANALYTIC_IK_HOOKE_AND_JEEVES_METHOD_2_HPP_
 #define HSRB_ANALYTIC_IK_HOOKE_AND_JEEVES_METHOD_2_HPP_
 
@@ -35,8 +35,8 @@ DAMAGE.
 namespace opt {
 
 /**
- * This class performs optimization using the Hooke-and-Jeeves method.
- * An optimization method that does not use gradients.
+ * This is a class for optimization using the Hooke-and-Jeeves method.
+ * It is an optimization method that does not use gradients.
  */
 class HookeAndJeevesMethod2 {
  public:
@@ -55,25 +55,25 @@ class HookeAndJeevesMethod2 {
    * @param	x0		Initial value
    * @param	step	Step width (used for line search)
    * @param	maxItor	Maximum iterations
-   * @param	epsilon	Convergence condition (considered converged when the distance moved by iteration is below this distance)
+   * @param	epsilon	Convergence condition (considered converged when the distance moved by iteration is less than this distance)
    */
   template<class Function2, class BiLineSearch>
   OptResult Search(Function2& func, BiLineSearch& lineSearch, const Vector2& x0,
                    double step) {
-    // Initialize the exploration results.
+    // Initializes the exploration results.
     result_ = OptFail;
     iteration_ = 0;
     solution_.Zero();
 
-    // Initialize the sequence of points.
+    // Initializes the point sequence.
     Vector2 x = x0;
 
-    // Initialize the previous position z_prev.
+    // Initializes the previous position z_prev.
     Vector2 z_prev = x0;
 
-    // Repeat iterations k.
+    // Repeats iteration k.
     for (int k = 1; k <= max_iteration_; k++) {
-      // Perform a line search in the (1,0) direction from point x to determine point y.
+      // Performs a line search from point x in the (1,0) direction to determine point y.
       Vector2 y;
       {
         DirectionAdapterFunction2<Function2> func_x1(func, x, Vector2(1, 0));
@@ -87,7 +87,7 @@ class HookeAndJeevesMethod2 {
         y.v2 = x.v2;
       }
 
-      // Perform a line search in the (0,1) direction from point y to determine point z.
+      // Performs a line search from point y in the (0,1) direction to determine point z.
       Vector2 z;
       {
         DirectionAdapterFunction2<Function2> func_x2(func, y, Vector2(0, 1));
@@ -101,12 +101,12 @@ class HookeAndJeevesMethod2 {
         z.v2 = y.v2 + solution_x2;
       }
 
-      // Perform pattern search using the Hooke-and-Jeeves method.
-      // Instead of searching in the direction d=z-x based on x before exploring in the x1, x2 directions,
-      // Search in the direction d=z-z_prev based on the previous position z_prev.
+      // Performs pattern search using the Hooke-and-Jeeves method.
+      // Instead of searching in the direction d=z-x based on x before x1, x2 direction search,
+      // Searches in the direction d=z-z_prev based on the previous position z_prev.
       Vector2 d = z - z_prev;
 
-      // If points z and z_prev are sufficiently close, end the iteration.
+      // Ends iteration if point z and point z_prev are sufficiently close.
       if (d.Norm() <= epsilon_) {
         result_ = OptSuccess;
         iteration_ = k;
@@ -114,7 +114,7 @@ class HookeAndJeevesMethod2 {
         return result_;
       }
 
-      // Perform a line search from point z in direction d to determine point x_next.
+      // Performs a line search from point z in direction d to determine point x_next.
       Vector2 x_next;
       {
         d.Normalize();
@@ -128,10 +128,10 @@ class HookeAndJeevesMethod2 {
         x_next = z + solution_d * d;
       }
 
-      // Calculate the distance between points x and x_next.
+      // Calculates the distance between point x and point x_next.
       double dx = Vector2::Norm(x, x_next);
 
-      // If points x and x_next are sufficiently close, end the iteration.
+      // Ends iteration if point x and point x_next are sufficiently close.
       if (dx <= epsilon_) {
         result_ = OptSuccess;
         iteration_ = k;
@@ -139,14 +139,14 @@ class HookeAndJeevesMethod2 {
         return result_;
       }
 
-      // Record the previous point z.
+      // Records the previous point z.
       z_prev = z;
 
-      // Update the current point x.
+      // Updates the focus point x.
       x = x_next;
     }
 
-    // Since the maximum number of iterations is reached, return OptMaxItor.
+    // Returns OptMaxItor as the maximum number of iterations has been reached.
     result_ = OptMaxItor;
     iteration_ = max_iteration_;
     solution_ = x;
@@ -154,35 +154,35 @@ class HookeAndJeevesMethod2 {
   }
 
   /**
-   * Set the maximum number of iterations.
+   * Sets the maximum number of iterations.
    */
   void set_max_iteration(int max_iteration) {
     max_iteration_ = max_iteration;
   }
 
   /**
-   * Set the convergence condition.
+   * Sets the convergence condition.
    */
   void set_epsilon(double epsilon) {
     epsilon_ = epsilon;
   }
 
   /**
-   * Retrieve the exploration results.
+   * Retrieves the exploration results.
    */
   OptResult result() const {
     return result_;
   }
 
   /**
-   * Retrieve the number of iterations used in the exploration.
+   * Retrieves the number of iterations taken for exploration.
    */
   int iteration() const {
     return iteration_;
   }
 
   /**
-   * Retrieve the solution after exploration.
+   * Retrieves the solution after exploration.
    */
   Vector2 solution() const {
     return solution_;
@@ -198,22 +198,22 @@ class HookeAndJeevesMethod2 {
 
   /**
    * Convergence condition
-   * (Considered converged when the distance moved by iteration is below this distance)
+   * (Considered converged when the distance moved by iteration is less than this distance)
    */
   double epsilon_;
 
   /**
-   * Maintain the exploration results.
+   * Holds the exploration results.
    */
   OptResult result_;
 
   /**
-   * Maintain the number of iterations used in the exploration.
+   * Holds the number of iterations taken for exploration.
    */
   int iteration_;
 
   /**
-   * Maintain the solution after exploration.
+   * Holds the solution after exploration.
    */
   Vector2 solution_;
 };

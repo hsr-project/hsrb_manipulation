@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test class for performing golden section line search method
+/// @brief Test class for golden section line search method
 #include <gtest/gtest.h>
 
 #include "functions_for_testing.hpp"
@@ -33,13 +33,13 @@ DAMAGE.
 
 namespace opt {
 ////////////////////////////////////////////////////////////////////////////////
-//// Test using linear function A
+//// Test with linear function A
 
 TEST(GoldenSectionLineSearch_Test, LinearFunction1A_Test) {
   int maxItor = 100;
   double epsilon = 1e-8;
 
-  // Search within interval [0,2]. x=0 will be the solution.
+  // Search in the interval [0,2]. x=0 is the solution.
   {
     LinearFunction1A func;
     GoldenSectionLineSearch search(maxItor, epsilon);
@@ -54,18 +54,18 @@ TEST(GoldenSectionLineSearch_Test, LinearFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test using quadratic function A
+//// Test with quadratic function A
 
 TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
   QuadraticFunction1A func;
@@ -74,7 +74,7 @@ TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
   double epsilon = 1e-8;
   GoldenSectionLineSearch search(maxItor, epsilon);
 
-  // Search within interval [0,2]. x=1 will be the solution.
+  // Search in the interval [0,2]. x=1 is the solution.
   {
     double a = 0.0;
     double b = 2.0;
@@ -87,19 +87,19 @@ TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
-    // 【Note】Due to calculation error of function values, the error with true value
-    // might not be less than the uncertainty interval error, therefore,
-    // Multiply the error by 10 for verification here.
+    // Verify the solution.
+    // 【Note】Due to calculation errors in function values,
+    //  the error with the true value may not be less than the uncertainty interval error,
+    //  so here the error is verified by multiplying it by 10.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search within interval [0,1]. x=1 will be the solution.
+  // Search in the interval [0,1]. x=1 is the solution.
   {
     double a = 0.0;
     double b = 1.0;
@@ -112,16 +112,16 @@ TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search within interval [1,2]. x=1 will be the solution.
+  // Search in the interval [1,2]. x=1 is the solution.
   {
     double a = 1.0;
     double b = 2.0;
@@ -134,16 +134,16 @@ TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search within interval [-4,-1]. x=-1 will be the solution.
+  // Search in the interval [-4,-1]. x=-1 is the solution.
   {
     double a = -4.0;
     double b = -1.0;
@@ -156,16 +156,16 @@ TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search within interval [2, 8]. x=2 will be the solution.
+  // Search in the interval [2, 8]. x=2 is the solution.
   {
     double a = 2.0;
     double b = 8.0;
@@ -178,39 +178,39 @@ TEST(GoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search within interval [0,2]. x=1 will be the solution.
-  // Verify that OptMaxItor is returned by limiting the number of iterations.
+  // Search in the interval [0,2]. x=1 is the solution.
+  // Verify that OptMaxItor is returned when the number of iterations is limited.
   {
     double a = 0.0;
     double b = 2.0;
     double expected = 1.0;
 
-    // Perform search and obtain the number of iterations.
+    // Perform the search and obtain the number of iterations.
     OptResult result = search.Search(func, a, b);
     int iteration = search.iteration();
 
-    // Perform search with one less iteration.
+    // Perform the search with one less iteration.
     search.set_max_iteration(iteration - 1);
     result = search.Search(func, a, b);
     EXPECT_EQ(OptMaxItor, result);
     EXPECT_EQ(OptMaxItor, search.result());
 
-    // Confirm the iterations have reached maximum.
+    // Confirm that the number of iterations is at its maximum.
     EXPECT_EQ(iteration - 1, search.iteration());
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test using non-differentiable function
+//// Test with a non-differentiable function
 
 TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
   NonDiffenrentialFunction1A func;
@@ -219,7 +219,7 @@ TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
   double epsilon = 1e-8;
   GoldenSectionLineSearch search(maxItor, epsilon);
 
-  // Search within interval [-2, 2]. x=-1 will be the solution.
+  // Search in the interval [-2, 2]. x=-1 is the solution.
   {
     double a = -2.0;
     double b = 2.0;
@@ -232,16 +232,16 @@ TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [-2, -1]. x=-1 will be the solution.
+  // Search in the interval [-2, -1]. x=-1 is the solution.
   {
     double a = -2.0;
     double b = -1.0;
@@ -254,16 +254,16 @@ TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [-1, 2]. x=-1 will be the solution.
+  // Search in the interval [-1, 2]. x=-1 is the solution.
   {
     double a = -1.0;
     double b = 2.0;
@@ -276,16 +276,16 @@ TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [-4, -3]. x=-3 will be the solution.
+  // Search in the interval [-4, -3]. x=-3 is the solution.
   {
     double a = -4.0;
     double b = -3.0;
@@ -298,16 +298,16 @@ TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [3, 4]. x=3 will be the solution.
+  // Search in the interval [3, 4]. x=3 is the solution.
   {
     double a = 3.0;
     double b = 4.0;
@@ -320,18 +320,18 @@ TEST(GoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test using inverse trapezoidal function
+//// Test with an inverted trapezoidal function
 
 TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
   InvertedTrapeziumFunction1A func;
@@ -340,7 +340,7 @@ TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
   double epsilon = 1e-8;
   GoldenSectionLineSearch search(maxItor, epsilon);
 
-  // Search within interval [-5, 5]. x∈[-1,2] will be the solution.
+  // Search in the interval [-5, 5]. x∈[-1,2] is the solution.
   {
     double a = -5.0;
     double b = 5.0;
@@ -354,18 +354,18 @@ TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution
                 && solution <= expected2 + epsilon);
   }
 
-  // Search within interval [-1/2, 1/2]. x∈[-1/2,1/2] will be the solution.
+  // Search in the interval [-1/2, 1/2]. x∈[-1/2,1/2] is the solution.
   {
     double a = -0.5;
     double b = 0.5;
@@ -379,18 +379,18 @@ TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution
                 && solution <= expected2 + epsilon);
   }
 
-  // Search within interval [-5, 0]. x∈[-1,0] will be the solution.
+  // Search in the interval [-5, 0]. x∈[-1,0] is the solution.
   {
     double a = -5.0;
     double b = 0.0;
@@ -404,18 +404,18 @@ TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution
                 && solution <= expected2 + epsilon);
   }
 
-  // Search within interval [1, 3]. x∈[1,2] will be the solution.
+  // Search in the interval [1, 3]. x∈[1,2] is the solution.
   {
     double a = 1.0;
     double b = 3.0;
@@ -429,11 +429,11 @@ TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution
@@ -442,7 +442,7 @@ TEST(GoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test using discontinuous function A
+//// Test with discontinuous function A
 
 TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
   DiscontinuousFunction1A func;
@@ -451,7 +451,7 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
   double epsilon = 1e-8;
   GoldenSectionLineSearch search(maxItor, epsilon);
 
-  // Search within interval [-5, 5]. x=1 will be the solution.
+  // Search in the interval [-5, 5]. x=1 is the solution.
   {
     double a = -5.0;
     double b = 5.0;
@@ -464,16 +464,16 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [0, 3]. x=1 will be the solution.
+  // Search in the interval [0, 3]. x=1 is the solution.
   {
     double a = 0.0;
     double b = 3.0;
@@ -486,16 +486,16 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [0, 1]. x=1 will be the solution.
+  // Search in the interval [0, 1]. x=1 is the solution.
   {
     double a = 0.0;
     double b = 1.0;
@@ -508,16 +508,16 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [0, 2]. x=1 will be the solution.
+  // Search in the interval [0, 2]. x=1 is the solution.
   {
     double a = 0.0;
     double b = 1.0;
@@ -530,16 +530,16 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [1, 3]. x=1 will be the solution.
+  // Search in the interval [1, 3]. x=1 is the solution.
   {
     double a = 1.0;
     double b = 3.0;
@@ -552,16 +552,16 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 
-  // Search within interval [1.5, 3]. x=1.5 will be the solution.
+  // Search in the interval [1.5, 3]. x=1.5 is the solution.
   {
     double a = 1.5;
     double b = 3.0;
@@ -574,18 +574,18 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test using discontinuous function B
+//// Test with discontinuous function B
 
 TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1B_Test) {
   double penalty = 1e8;
@@ -594,7 +594,7 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1B_Test) {
   double epsilon = 1e-8;
   GoldenSectionLineSearch search(maxItor, epsilon);
 
-  // Search within interval [-100, 100]. x=0 will be the solution.
+  // Search in the interval [-100, 100]. x=0 is the solution.
   {
     double a = -20;
     double b = 20;
@@ -607,18 +607,18 @@ TEST(GoldenSectionLineSearch_Test, DiscontinuousFunction1B_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Abnormal case test using non-convex function
+//// Abnormal case test with non-convex function
 
 TEST(GoldenSectionLineSearch_Test, NonConvexFunction1A_Test) {
   NonConvexFunction1A func;
@@ -627,7 +627,7 @@ TEST(GoldenSectionLineSearch_Test, NonConvexFunction1A_Test) {
   double epsilon = 1e-8;
   GoldenSectionLineSearch search(maxItor, epsilon);
 
-  // Search within interval [0, 4].
+  // Search in the interval [0, 4].
   // The search result should be 1.5.
   {
     double a = 0;
@@ -641,11 +641,11 @@ TEST(GoldenSectionLineSearch_Test, NonConvexFunction1A_Test) {
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Check the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }

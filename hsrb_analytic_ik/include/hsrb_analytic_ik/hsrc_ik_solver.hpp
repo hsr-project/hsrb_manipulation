@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief High-speed IK for HSR-B
+/// @brief Fast IK for HSR-B
 #ifndef HSRB_ANALYTIC_IK_HSRC_IK_SOLVER_HPP_
 #define HSRB_ANALYTIC_IK_HSRC_IK_SOLVER_HPP_
 
@@ -44,7 +44,7 @@ class HsrcIKSolver : public HybridIKSolverBase {
  public:
   HsrcIKSolver();
 
-  /// @param [IN] successor IK to pass next with Next
+  /// @param [IN] successor IK to be passed next in Next
   explicit HsrcIKSolver(tmc_robot_kinematics_model::IKSolver::Ptr successor);
 
   virtual ~HsrcIKSolver() = default;
@@ -54,7 +54,7 @@ class HsrcBaseYawIKSolver : public BaseYawIKSolver {
  public:
   HsrcBaseYawIKSolver();
 
-  /// @param [IN] successor IK to pass next with Next
+  /// @param [IN] successor IK to be passed next in Next
   explicit HsrcBaseYawIKSolver(tmc_robot_kinematics_model::IKSolver::Ptr successor);
 
   virtual ~HsrcBaseYawIKSolver() = default;

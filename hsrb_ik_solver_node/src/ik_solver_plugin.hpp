@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2025 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -44,7 +44,7 @@ class IkSolverPluginRobustToBasePositionErrorCommon : public tmc_ik_solver_node:
   virtual ~IkSolverPluginRobustToBasePositionErrorCommon() = default;
 
  protected:
-  // Solve IK based on target end-effector position/orientation and cart position
+  // Solve IK based on the target end-effector position/orientation and the cart position
   void SolveIkImpl(const Eigen::Affine3d& origin_to_hand_goal,
                    const tmc_manipulation_types::JointState& initial_joint_state,
                    const Eigen::Affine3d& initial_origin_to_base,
@@ -65,7 +65,7 @@ class HsrbIkSolverPluginRobustToBasePositionError : public IkSolverPluginRobustT
   virtual ~HsrbIkSolverPluginRobustToBasePositionError() = default;
 
  protected:
-  // Calculate the range of candidate cart positions based on target end-effector position/orientation
+  // Calculate the range of candidate cart positions based on the target end-effector position/orientation
   bool CalculateBaseCandidateMapSize(const Eigen::Affine3d& origin_to_hand_goal,
                                      std::array<double, 2>& center_out,
                                      std::array<double, 2>& radius_range_out) const override;
@@ -77,7 +77,7 @@ class HsrcIkSolverPluginRobustToBasePositionError : public IkSolverPluginRobustT
   virtual ~HsrcIkSolverPluginRobustToBasePositionError() = default;
 
  protected:
-  // Calculate the range of candidate cart positions based on target end-effector position/orientation
+  // Calculate the range of candidate cart positions based on the target end-effector position/orientation
   bool CalculateBaseCandidateMapSize(const Eigen::Affine3d& origin_to_hand_goal,
                                      std::array<double, 2>& center_out,
                                      std::array<double, 2>& radius_range_out) const override;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -41,20 +41,20 @@ constexpr double kEpsilon = 0.001;
 constexpr double kConvergeThreshold = 1e-6;
 const char* const kHandName = "hand_palm_link";
 
-// Tolerance for the translational error of the hand [m]
+// End-effector translational tolerance [m]
 constexpr double kTransThreshold = 1e-3;
-// Tolerance for the angular error of the hand [rad]
+// End-effector angular tolerance [rad]
 constexpr double kRotThreshold = 2*M_PI*1e-2;
 // Degrees of freedom of the robot
 constexpr uint32_t kDOF = 8;
 constexpr uint32_t kArmDOF = 5;
 
-// Tolerance limit for optimality compared to numerical calculations 10%
+// Acceptable limit of optimality compared to numerical calculation: 10%
 constexpr double kOptimizeThreshold = 1.1;
-// Speed compared to numerical solutions
+// Speed compared to numerical solution
 constexpr double kAnalyticExpectTimes = 2.0;
 
-// Convert configuration to angle and base posture
+// Convert configuration to angle and base pose
 void ConfigurationToAngleAndBase(const Eigen::VectorXd& config,
                                  Eigen::VectorXd& angle_out,
                                  Eigen::Affine3d& origin_to_base_out) {
@@ -75,26 +75,26 @@ void AngleAndBaseToConfiguration(const Eigen::VectorXd& angle,
   config_out.tail(kArmDOF) = angle;
 }
 
-// Determine if two postures are sufficiently close
-// Consider close if translation is within kTransThreshold[m] and rotation is within kRotThreshold[rad]
+// Determine if two poses are sufficiently close
+// Consider close if translation is within kTransThreshold [m] and rotation is within kRotThreshold [rad]
 bool IsNearAffine(const Eigen::Affine3d& ref, const Eigen::Affine3d& cur) {
   const auto trans_diff = (ref.translation() - cur.translation()).norm();
   const auto rot_diff = fabs(Eigen::AngleAxisd(ref.linear() * cur.linear().transpose()).angle());
   return ((trans_diff < kTransThreshold) && (rot_diff < kRotThreshold));
 }
 
-// Time measurement: Please modify as gettimeofday is not suitable.
+// Time measurement: gettimeofday is not very suitable, please consider revising.
 double GetTime(void) {
   //
-  // Measure CPU time specific to threads.
-  // This allows for performance tests less dependent on the load conditions of the running environment.
-  // (It is not completely unaffected by the running environment)
+  // Measure thread-specific CPU time.
+  // This allows performance testing that is less dependent on the load conditions of the execution environment.
+  // (It does not mean it is completely unaffected by the execution environment)
   //
-  // 【Change】Intelligent Information Systems Corporation, 2015-02-13
-  // 【Note】To use the clock_gettime function on Ubuntu 12, include <sys/time.h>
-  // and link with the librt.so library.
+  // 【Change】Intelligent Information Systems Co., Ltd., 2015-02-13
+  // 【Note】To use the clock_gettime function on Ubuntu 12, include <sys/time.h> and
+  // link the librt.so library.
   // Modify src/hsrb_analytic_ik/CMakeLists.txt,
-  // adding the library to be linked with the target_link_libraries command in CMake.
+  // and add the library to be linked using the CMake target_link_libraries command.
   //
   struct timespec t;
   clock_gettime(CLOCK_THREAD_CPUTIME_ID, &t);
@@ -103,8 +103,8 @@ double GetTime(void) {
 }
 
 /**
- * This is a class for collecting statistical information.
- * 【Addition】Intelligent Information Systems Corporation, 2015-02-13
+ * A class for aggregating statistical information.
+ * 【Addition】Intelligent Information Systems Co., Ltd., 2015-02-13
  */
 class Stats {
  public:
@@ -153,7 +153,7 @@ void Stats::Add(double value) {
 
 namespace hsrb_analytic_ik {
 
-// Read all available 1x8 configurations from a file.
+// Read as many 1x8 configurations as possible from the file.
 void LoadDataFile(const std::string& file_name, std::vector<Eigen::VectorXd>& data_out) {
   data_out.clear();
   std::string buf;
@@ -193,25 +193,23 @@ void IKTestDriver::SolveFK(const Eigen::VectorXd& config, Eigen::Affine3d& origi
   origin_to_end_out = robot_->GetObjectTransform(kHandName);
 }
 
-// Solve with the provided IKSolver
+// Solve using the given IKSolver
 bool IKTestDriver::SolveIK(const tmc_robot_kinematics_model::IKSolver::Ptr& ik_solver,
                            const Eigen::Affine3d& ref_origin_to_end,
                            const Eigen::VectorXd& initial_config,
                            Eigen::VectorXd& solution_config_out) {
-  tmc_manipulation_types::JointState solution;
-  Eigen::Affine3d origin_to_hand_result;
-  Eigen::Affine3d origin_to_base_solution;
-  const auto result =  ik_solver->Solve(GenerateRequest(ref_origin_to_end, initial_config),
-                                        solution, origin_to_base_solution, origin_to_hand_result);
-  if (result == tmc_robot_kinematics_model::kSuccess) {
-    AngleAndBaseToConfiguration(solution.position, origin_to_base_solution, solution_config_out);
+  std::vector<tmc_robot_kinematics_model::IKResponse> responses;
+  const auto result =  ik_solver->Solve(GenerateRequest(ref_origin_to_end, initial_config), responses);
+  if (result == tmc_robot_kinematics_model::kSuccess && !responses.empty()) {
+    AngleAndBaseToConfiguration(responses[0].solution_angle.position, responses[0].origin_to_base,
+                                solution_config_out);
     return true;
   } else {
     return false;
   }
 }
 
-// Solve with the provided IKSolver
+// Solve using the given IKSolver
 bool IKTestDriver::SolveIK(const tmc_robot_kinematics_model::IKSolver::Ptr& ik_solver,
                            const Eigen::Affine3d& ref_origin_to_end,
                            const Eigen::VectorXd& initial_config,
@@ -230,7 +228,7 @@ bool IKTestDriver::SolveIK(const tmc_robot_kinematics_model::IKSolver::Ptr& ik_s
   }
 }
 
-// Solve with the built-in numerical IKSolver
+// Solve using the internal numerical IKSolver
 bool IKTestDriver::SolveNumericIK(const Eigen::Affine3d& ref_origin_to_end,
                                   const Eigen::VectorXd& initial_config,
                                   Eigen::VectorXd& solution_config_out) {
@@ -239,7 +237,7 @@ bool IKTestDriver::SolveNumericIK(const Eigen::Affine3d& ref_origin_to_end,
 
 double IKTestDriver::CalcWeightedNorm(const Eigen::VectorXd& config1, const Eigen::VectorXd& config2) const {
   Eigen::VectorXd diff = config1 - config2;
-  // diff(2) has infinite rotation so normalize
+  // Normalize diff(2) as it allows infinite rotation
   if (fabs(diff(2)) > M_PI) diff(2) = M_PI - fabs(diff(2));
   return (weight_vector_.cwiseProduct(diff)).norm();
 }
@@ -251,7 +249,7 @@ void IKTestDriver::CheckMinMax(const Eigen::VectorXd& joint) const {
     EXPECT_LE(joint(i), joint_max_(i)) << "[" << use_name_[i] << "] : higher limit";
   }
 }
-// Function to find the minimum range of joint angles (Arms 0-4, wrist FLEX as 3) mainly for test data of HSR-C
+// Function to find the minimum value of the movable range of arm joint angles (0-4, 3 is wrist FLEX) (installed reluctantly to support HSR-C test data)
 bool IKTestDriver::ArmJointCheckMinMax(const Eigen::VectorXd& joint) const {
   for (uint32_t i = 0; i < kArmDOF; ++i) {
     if (joint(i) < joint_min_(i) || joint(i) > joint_max_(i)) {
@@ -264,12 +262,13 @@ bool IKTestDriver::ArmJointCheckMinMax(const Eigen::VectorXd& joint) const {
 tmc_robot_kinematics_model::IKRequest IKTestDriver::GenerateRequest(const Eigen::Affine3d& ref_origin_to_end,
                                                                     const Eigen::VectorXd& initial_config) const {
   tmc_robot_kinematics_model::IKRequest req(base_movement_type_);
-  req.frame_name = kHandName;
-  req.frame_to_end = Eigen::Affine3d::Identity();
+  req.target_frames.resize(1);
+  req.target_frames[0].frame_name = kHandName;
+  req.target_frames[0].frame_to_end =  Eigen::Affine3d::Identity();
+  req.target_frames[0].ref_origin_to_end = ref_origin_to_end;
   req.initial_angle.name = use_name_;
   req.use_joints = use_name_;
   req.weight = weight_vector_;
-  req.ref_origin_to_end = ref_origin_to_end;
   ConfigurationToAngleAndBase(initial_config, req.initial_angle.position, req.origin_to_base);
   return req;
 }
@@ -279,34 +278,34 @@ void RunTest(const std::vector<Eigen::VectorXd>& ref_configs,
              const std::shared_ptr<IKTestDriver>& ik_test_driver,
              const tmc_robot_kinematics_model::IKSolver::Ptr& analytic_ik_solver,
              const std::vector<uint32_t>& mask_indices) {
-  // 【Addition】Intelligent Information Systems Corporation, 2015-02-13
-  // Create an object for statistically collecting optimality and computation time
+  // 【Addition】Intelligent Information Systems Co., Ltd., 2015-02-13
+  // Create an object for statistically aggregating optimality and computation time.
   Stats norm_stats;
   Stats time_stats;
 
   int32_t numeric_ik_solve = 0;
 
-  // Solution pattern loop
+  // Loop through solution patterns
   for (const auto& ref_config : ref_configs) {
-    // Process to exclude data when file data for test of joint angles is out of range
-    if (!ik_test_driver->ArmJointCheckMinMax(ref_config.tail(kArmDOF))) {  // Check range
+    // If the test file data for joint angles is out of range, process to exclude that data.
+    if (!ik_test_driver->ArmJointCheckMinMax(ref_config.tail(kArmDOF))) {  // Range check
       continue;
     }
     for (const auto& init_config : init_configs) {
-      if (!ik_test_driver->ArmJointCheckMinMax(init_config.tail(kArmDOF))) {  // Check initial value range
+      if (!ik_test_driver->ArmJointCheckMinMax(init_config.tail(kArmDOF))) {  // Also check the range of initial values
         continue;
       }
-      // For axes not used in IK, put the same value as init
+      // Axes not used in IK are set to the same values as init
       auto masked_ref_config = ref_config;
       for (const auto i : mask_indices) {
         masked_ref_config[i] = init_config[i];
       }
 
-      // Create target value with FK
+      // Create target values using FK
       Eigen::Affine3d ref_origin_to_hand;
       ik_test_driver->SolveFK(masked_ref_config, ref_origin_to_hand);
 
-      // Generate solution with Analytic IK + optimization, first confirm it can be solved
+      // Generate solutions using analytic IK + optimization; first confirm solvability
       const auto start = GetTime();
       Eigen::VectorXd analytic_solution(8);
       auto solved = ik_test_driver->SolveIK(analytic_ik_solver, ref_origin_to_hand, init_config, analytic_solution);
@@ -314,23 +313,23 @@ void RunTest(const std::vector<Eigen::VectorXd>& ref_configs,
       const auto end = GetTime();
       const auto analytic_elapsed = end - start;
 
-      // If unsolvable, further checks are meaningless
+      // Cases where solutions cannot be found make subsequent checks meaningless
       if (!solved) {
         continue;
       }
 
-      // Confirm that it is properly a solution
+      // Confirm that it is indeed a solution
       Eigen::Affine3d ik_origin_to_hand;
       ik_test_driver->SolveFK(analytic_solution, ik_origin_to_hand);
 
-      // Check if it matches the target hand position
+      // Check if it matches the target end-effector position
       EXPECT_TRUE(IsNearAffine(ref_origin_to_hand, ik_origin_to_hand))
           << "[test case ref " << masked_ref_config.transpose()
           << " ] : IK solution is too far"
           << "\nref_origin_to_hand=\n" << ref_origin_to_hand.matrix()
           << "\nik_origin_to_hand=\n" << ik_origin_to_hand.matrix();  // CJS added.
 
-      // Check if it falls within joint angles
+      // Check if it falls within the joint angle limits
       ik_test_driver->CheckMinMax(analytic_solution.tail(kArmDOF));
 
       const auto start_n = GetTime();
@@ -346,18 +345,18 @@ void RunTest(const std::vector<Eigen::VectorXd>& ref_configs,
         const auto numeric_weighted_norm = ik_test_driver->CalcWeightedNorm(init_config, numeric_solution);
 
         /*
-         // Compare with numerical solution to confirm it falls within (kOptimizeThreshold) times
+         // Compare numerical solution and optimality to confirm it is within (kOptimizeThreshold) times
          EXPECT_LE(analytic_weighted_norm,
          numeric_weighted_norm * kOptimizeThreshold);
-         // Compare calculation time with numerical solution, confirm it's (kAnalyticExpectTimes) times faster
-         // If difficult, compare with average in init_configs
+         // Compare numerical solution and computation time to confirm it is (kAnalyticExpectTimes) times faster
+         // If this is difficult, compare using the average of init_configs
          EXPECT_LE(analytic_elapsed * kAnalyticExpectTimes,
          numeric_elapsed);
        */
 
-        // 【Revision】Intelligent Information Systems Corporation, 2015-02-13
+        // 【Modification】Intelligent Information Systems Co., Ltd., 2015-02-13
         // Change from individual test case judgment to statistical judgment.
-        // (Excludes cases where statistical data becomes infinite)
+        // (Exclude cases where statistical data becomes infinite)
         if (numeric_weighted_norm > 0 && analytic_elapsed > 0) {
           norm_stats.Add(analytic_weighted_norm / numeric_weighted_norm);
           time_stats.Add(numeric_elapsed / analytic_elapsed);
@@ -369,17 +368,17 @@ void RunTest(const std::vector<Eigen::VectorXd>& ref_configs,
 /* Commented by TY
   std::cout << "numeric_ik_solves : " << numeric_ik_solve << std::endl;
 
-  // 【Addition】Intelligent Information Systems Corporation, 2015-02-13
-  // Test based on statistical values for optimality and computation time.
+  // 【Addition】Intelligent Information Systems Co., Ltd., 2015-02-13
+  // Conduct tests based on statistical values of optimality and computation time.
 
-  // Compare with numerical solution to confirm it falls within (kOptimizeThreshold) times
+  // Compare numerical solution and optimality to confirm it is within (kOptimizeThreshold) times
   EXPECT_LE(norm_stats.Mean(), kOptimizeThreshold);
 
-  // Compare calculation time with numerical solution, confirm it's (kAnalyticExpectTimes) times faster
+  // Compare numerical solution and computation time to confirm it is (kAnalyticExpectTimes) times faster
   EXPECT_LE(kAnalyticExpectTimes, time_stats.Mean());
 
 
-  // Output the statistical values for reference.
+  // Output statistical values for reference.
   std::cout << "Norm Stats: " << "   mean=" << norm_stats.Mean() << " , sd="
             << norm_stats.Sd() << " , min=" << norm_stats.Min() << " , max="
             << norm_stats.Max() << std::endl;

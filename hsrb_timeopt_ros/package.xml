@@ -1,7 +1,7 @@
 <package format="3">
   <name>hsrb_timeopt_ros</name>
-  <version>2.1.0</version>
-  <description>This solves HSR's Time optimal trajectory parameterization.</description>
+  <version>3.0.0</version>
+  <description>This solve HSR's Time optimal trajectory parametarization.</description>
   <maintainer email="xr-hsr-support@mail.toyota.co.jp">HSR Support</maintainer>
   <license>BSD 3-clause Clear License</license>
   <author>Koji Terada</author>
@@ -13,7 +13,6 @@
   <test_depend>launch</test_depend>
   <test_depend>launch_ros</test_depend>
   <test_depend>launch_testing</test_depend>
-  <test_depend>python3-nose</test_depend>
   <test_depend>python3-pytest</test_depend>
   <test_depend>tmc_manipulation_msgs</test_depend>
   <test_depend>trajectory_msgs</test_depend>

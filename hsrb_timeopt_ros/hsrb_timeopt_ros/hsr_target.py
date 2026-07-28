@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -55,7 +55,7 @@ class HsrKinematicsTarget(Target):
         u"""Update the kinematics of the target.
 
         Args:
-            point: dictionary of state quantities
+            point: dict of state quantities
         """
         self._ac.update_kinematics(point)
         self._joints.update_kinematics(point)
@@ -64,20 +64,20 @@ class HsrKinematicsTarget(Target):
         u"""Update the kinematics of the target using the precomputed point.
 
         Args:
-            point: dictionary of state quantities
+            point: dict of state quantities
         """
         self._ac.point = point
         self._joints.point = point
 
     def update_dynamics(self):
-        u"""Do nothing because it is an acceleration level constraint."""
+        u"""Do nothing as it is an acceleration-level constraint."""
         pass
 
     def get_dynamics(self):
-        u"""Return dynamic parameters (a, b, c, d).
+        u"""Return the dynamic parameters (a, b, c, d).
 
         Returns:
-            (a, b, c, d): A dictionary with ('variable name', 'constraint type') as keys and values as values.
+            (a, b, c, d): A dict with ('variable name', 'constraint type') as keys and values as values.
         """
         if self._use_base:
             (a, b, c, d) = self._ac.get_dynamics()

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -29,7 +29,7 @@ DAMAGE.
 #ifndef HSRB_ANALYTIC_IK_COMMON_HPP_
 #define HSRB_ANALYTIC_IK_COMMON_HPP_
 
-#define _USE_MATH_DEFINES  // To use M_PI, etc.
+#define _USE_MATH_DEFINES  // To use constants like M_PI
 #include <cmath>
 
 namespace opt {
@@ -39,12 +39,12 @@ namespace opt {
   Class& operator=(const Class&);
 
 /**
- * Constants representing the results of optimization.
+ * Constants representing optimization results.
  */
 enum OptResult {
-  OptSuccess,  // Success (Converged)
-  OptMaxItor,  // Maximum number of iterations reached
-  OptFail  // Failure (Did not converge, No solution)
+  OptSuccess,  // Success (converged)
+  OptMaxItor,  // Reached maximum iterations
+  OptFail  // Failure (did not converge, no solution)
 };
 
 #ifndef M_PI

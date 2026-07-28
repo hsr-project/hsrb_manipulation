@@ -1,6 +1,6 @@
 <package format="3">
   <name>hsrb_ik_solver_node</name>
-  <version>2.1.0</version>
+  <version>3.0.0</version>
   <description>Ik solver node and plugin interfaces</description>
 
   <maintainer email="xr-hsr-support@mail.toyota.co.jp">HSR Support</maintainer>
