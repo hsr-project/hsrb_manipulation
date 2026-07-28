@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -32,11 +32,6 @@ import unittest
 import launch
 import launch_ros.actions
 import launch_testing
-from nose.tools import assert_almost_equal
-from nose.tools import assert_false
-from nose.tools import assert_less_equal
-from nose.tools import assert_true
-from nose.tools import eq_
 import pytest
 import rclpy
 from rclpy.duration import Duration
@@ -86,7 +81,7 @@ class HsrbTimeoptTestCase(unittest.TestCase):
         rclpy.shutdown()
 
     def setUp(self):
-        # To call the service, spinning in a separate thread is necessary.
+        # To call the service, spin needs to be run in a separate thread.
         self._node = rclpy.create_node("test_node")
         self._executor = MultiThreadedExecutor()
         self._thread = threading.Thread(target=rclpy.spin, args=(self._node, self._executor), daemon=True)
@@ -163,8 +158,8 @@ class HsrbTimeoptTestCase(unittest.TestCase):
         traj.points = [point1, point2]
         req.trajectory = traj
         res = self._filter_srv.call(req)
-        assert_true(res.is_success)
-        eq_(self._joint_names, res.trajectory.joint_names)
+        self.assertTrue(res.is_success)
+        self.assertEqual(self._joint_names, res.trajectory.joint_names)
         non_base_joints = [
             'arm_lift_joint',
             'arm_flex_joint',
@@ -180,8 +175,8 @@ class HsrbTimeoptTestCase(unittest.TestCase):
             for joint in non_base_joints:
                 vel = point.velocities[traj_joints.index(joint)]
                 acc = point.accelerations[traj_joints.index(joint)]
-                assert_less_equal(abs(vel), _LIMITS[joint]['velocity'])
-                assert_less_equal(abs(acc), _LIMITS[joint]['acceleration'])
+                self.assertLessEqual(abs(vel), _LIMITS[joint]['velocity'])
+                self.assertLessEqual(abs(acc), _LIMITS[joint]['acceleration'])
 
     def test_no_base_roll_joint(self):
         req = FilterJointTrajectory.Request()
@@ -236,7 +231,7 @@ class HsrbTimeoptTestCase(unittest.TestCase):
         traj.points = [point1, point2]
         req.trajectory = traj
         res = self._filter_srv.call(req)
-        assert_false(res.is_success)
+        self.assertFalse(res.is_success)
 
     def test_too_small_movement(self):
         req = FilterJointTrajectory.Request()
@@ -253,10 +248,10 @@ class HsrbTimeoptTestCase(unittest.TestCase):
         req.trajectory = traj
         res = self._filter_srv.call(req)
 
-        assert_true(res.is_success)
-        eq_(len(res.trajectory.points), 1)
-        assert_almost_equal(res.trajectory.points[0].positions[0], 0.2 + 1e-5)
-        assert_almost_equal(
+        self.assertTrue(res.is_success)
+        self.assertEqual(len(res.trajectory.points), 1)
+        self.assertAlmostEqual(res.trajectory.points[0].positions[0], 0.2 + 1e-5)
+        self.assertAlmostEqual(
             Duration.from_msg(res.trajectory.points[0].time_from_start).nanoseconds / 1000000000.0, 0.1)
 
     def test_joint_in_use_joint_param(self):
@@ -271,12 +266,12 @@ class HsrbTimeoptTestCase(unittest.TestCase):
         req.trajectory = traj
 
         res = self._filter_srv.call(req)
-        assert_true(res.is_success)
-        eq_(['dummy_joint'], res.trajectory.joint_names)
+        self.assertTrue(res.is_success)
+        self.assertEqual(['dummy_joint'], res.trajectory.joint_names)
 
         traj_joints = res.trajectory.joint_names
         for point in res.trajectory.points:
             vel = point.velocities[traj_joints.index('dummy_joint')]
             acc = point.accelerations[traj_joints.index('dummy_joint')]
-            assert_less_equal(abs(vel), _LIMITS['dummy_joint']['velocity'])
-            assert_less_equal(abs(acc), _LIMITS['dummy_joint']['acceleration'])
+            self.assertLessEqual(abs(vel), _LIMITS['dummy_joint']['velocity'])
+            self.assertLessEqual(abs(acc), _LIMITS['dummy_joint']['acceleration'])

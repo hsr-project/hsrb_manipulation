@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -66,7 +66,7 @@ struct Matrix2 {
   }
 
   /**
-   * Calculates the matrix x*y'.
+   * Computes the matrix x*y'.
    */
   static Matrix2 Tod(const Vector2& x, const Vector2& y) {
     return Matrix2(x.v1 * y.v1, x.v1 * y.v2, x.v2 * y.v1, x.v2 * y.v2);

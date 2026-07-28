@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,6 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 # DAMAGE.
 # -*- coding: utf-8 -*-
-
 from launch import LaunchDescription
 
 from launch.actions import DeclareLaunchArgument
@@ -62,13 +61,11 @@ def generate_launch_description():
     safe_pose_changer_config = PathJoinSubstitution(
         [FindPackageShare(runtime_config_package), 'config', configuration_file])
 
-    # Explicit setting of hand_motor_joint is only required for classic Gazebo, so it can be removed after transition to Ignition
     safe_pose_changer_node = Node(package='tmc_safe_pose_changer',
                                   executable='safe_pose_changer',
                                   name='safe_pose_changer',
                                   parameters=[safe_pose_changer_config,
                                               {'wait_for_controller_milliseconds': 60000},
-                                              {'controllers': LaunchConfiguration('controllers')},
-                                              {'gripper_controller': {'joints': ['hand_motor_joint']}}])
+                                              {'controllers': LaunchConfiguration('controllers')}])
 
     return LaunchDescription(declare_arguments() + [safe_pose_changer_node])

@@ -2,6 +2,15 @@
 Changelog for package hsrb_timeopt_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.0 (2026-06-29)
+-------------------
+* Migration to ROS2 jazzy
+* Contributors: Keisuke Takeshita, Shigeo Tsuduki
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package hsrb_timeopt_ros
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 2.1.0 (2025-04-22)
 -------------------
 * Fix the issue where the dependency on hsrb_analytic_ik was missing.

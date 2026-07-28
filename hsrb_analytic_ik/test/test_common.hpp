@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -35,7 +35,7 @@ DAMAGE.
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-// Build fails if Pinocchio headers are included after Boost, so include them first
+// Build fails if pinocchio headers are included after boost headers, so include them first.
 #include <tmc_robot_kinematics_model/pinocchio_wrapper.hpp>
 
 #include <tmc_robot_kinematics_model/ik_solver.hpp>
@@ -43,7 +43,7 @@ DAMAGE.
 
 namespace hsrb_analytic_ik {
 
-// Read 1x8 configurations from the file as much as available.
+// Read as many 1x8 configurations as possible from the file.
 void LoadDataFile(const std::string& file_name, std::vector<Eigen::VectorXd>& data_out);
 void LoadDataFile(const std::string& file_name, const std::vector<uint32_t>& mask_indices,
                   std::vector<Eigen::VectorXd>& data_out);
@@ -56,35 +56,35 @@ class IKTestDriver {
                         tmc_manipulation_types::BaseMovementType base_movement_type);
   virtual ~IKTestDriver() = default;
 
-  // Solve FK
+  // Solve FK.
   void SolveFK(const Eigen::VectorXd& config, Eigen::Affine3d& origin_to_end_out);
 
-  // Solve with the given IKSolver
+  // Solve using the provided IKSolver.
   bool SolveIK(const tmc_robot_kinematics_model::IKSolver::Ptr& ik_solver,
                const Eigen::Affine3d& ref_origin_to_end,
                const Eigen::VectorXd& initial_config,
                Eigen::VectorXd& solution_config_out);
 
-  // Solve with the given IKSolver
+  // Solve using the provided IKSolver.
   bool SolveIK(const tmc_robot_kinematics_model::IKSolver::Ptr& ik_solver,
                const Eigen::Affine3d& ref_origin_to_end,
                const Eigen::VectorXd& initial_config,
                std::vector<Eigen::VectorXd>& solution_configs_out);
 
-  // Solve with the internal numerical IKSolver
+  // Solve using the internal numerical IKSolver.
   bool SolveNumericIK(const Eigen::Affine3d& ref_origin_to_end,
                       const Eigen::VectorXd& initial_config,
                       Eigen::VectorXd& solution_config_out);
 
-  // Calculate weighted norm
+  // Calculate weighted Norm.
   double CalcWeightedNorm(const Eigen::VectorXd& config1,
                           const Eigen::VectorXd& config2) const;
 
-  // Check maximum and minimum values
+  // Check maximum and minimum values.
   void CheckMinMax(const Eigen::VectorXd& joint) const;
 
-  // Check the movable range of 5 arm joints out of 7-axis joint angles
-  // Reluctantly added (during HSR-C test, the random test sets the 6th-axis value below the lower limit, so take the lower limit value at that time.
+  // Check the movable range of the arm's 5 axes among the 7-axis joint angles.
+  // Added reluctantly (During HSR-C testing, random tests caused the 6th axis setting value to fall below the lower limit, so retrieve the lower limit value in such cases).
   bool ArmJointCheckMinMax(const Eigen::VectorXd& joint) const;
 
  private:

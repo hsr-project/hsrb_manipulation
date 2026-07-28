@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -31,7 +31,7 @@ from tmc_timeopt_ros.timeopt_filter import TimeoptFilterNode
 
 
 class HsrbTimeoptFilter(TimeoptFilterNode):
-    u"""Node that converts the spatial command trajectory of HSR (cart + arm) into a temporal trajectory."""
+    u"""A node that converts the spatial command trajectory of HSR (base + arm) into a temporal trajectory."""
 
     _DEFAULT_JOINTS = ['arm_lift_joint',
                        'arm_flex_joint',
@@ -47,8 +47,8 @@ class HsrbTimeoptFilter(TimeoptFilterNode):
                     'right_wheel']
 
     def __init__(self):
-        u"""Initialize"""
-        # Default values assume HSR-B parameters
+        u"""Initialization"""
+        # Default values are parameters for HSR-B
         use_joint = self._DEFAULT_JOINTS + self._BASE_JOINTS
         super(HsrbTimeoptFilter, self).__init__(srv_name='~/filter_trajectory', default_joint=use_joint)
 
@@ -59,16 +59,16 @@ class HsrbTimeoptFilter(TimeoptFilterNode):
         self._target = HsrKinematicsTarget(param=omni_base_param, joint_names=joint_names)
 
     def _timeopt_trajectory_from_ros(self, start_state, trajectory):
-        u"""Convert ROS trajectory into timeopt trajectory"""
+        u"""Convert ROS trajectory to time-optimal trajectory"""
         traj_dict = super(HsrbTimeoptFilter, self)._timeopt_trajectory_from_ros(start_state, trajectory)
         if traj_dict is None:
             return None
-        # Use caster axis values from start_state
+        # Use the caster axis included in start_state
         try:
             yaw_index = start_state.name.index("base_roll_joint")
         except ValueError:
             raise ValueError("base_roll_joint not found in start_state")
-        # Since the caster axis is based on the foundation, it is made negative
+        # The caster axis is based on the foundation, so it is negated
         self._caster_position = -start_state.position[yaw_index]
         traj_dict['caster'][0] = (self._caster_position, 0, 0)
         return traj_dict

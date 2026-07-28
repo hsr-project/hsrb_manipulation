@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test a group of adapters that perform operations on functions
+/// @brief Tests for a group of adapters that perform operations on functions
 #include <gtest/gtest.h>
 
 #include "function_adapters.hpp"
@@ -33,7 +33,7 @@ DAMAGE.
 
 namespace opt {
 ////////////////////////////////////////////////////////////////////////////////
-//// Test for Shift Adapter
+//// Test for the shift adapter
 
 // f(x)=(x-1)^4  (x∈[0,2])
 class TestFunctionA {
@@ -52,7 +52,7 @@ class TestFunctionA {
   }
 };
 
-// Function which moves TestFunctionA to the right by 1. That is:
+// A function where TestFunctionA is shifted to the right by 1. In other words:
 // f(x)=(x-2)^4  (x∈[1,3])
 class TestFunctionB {
  public:
@@ -106,7 +106,7 @@ TEST(FunctionAdapters_Test, ShiftAdapterFnuction1_Test) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test for Reverse Adapter
+//// Test for the reverse adapter
 
 // f(x)=(x-1)^3  (x∈[1,3])
 class TestFunctionD {
@@ -125,7 +125,7 @@ class TestFunctionD {
   }
 };
 
-// Function which mirrors TestFunctionA around the X-axis, that is:
+// A function where TestFunctionA is flipped around the X-axis, in other words:
 // f(x)=(-x-1)^3  (x∈[-3,-1])
 class TestFunctionE {
  public:
@@ -183,34 +183,34 @@ TEST(FunctionAdapters_Test, ReverseAdapterFnuction1_Test) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test for Direction Adapter
+//// Test for the direction adapter
 
 TEST(FunctionAdapters_Test, DirectionAdapterFnuction1_Test) {
   {
-    // Create a linear function toward direction (1,0) from point (0,3) for a bivariate quartic function QuarticFunction2A.
+    // For the bivariate quartic function QuarticFunction2A, create a linear function starting from point (0,3) in the direction of (1,0).
     QuarticFunction2A func2;
     Vector2 x(0, 3);
     Vector2 d(1, 0);
     DirectionAdapterFunction2<QuarticFunction2A> func1(func2, x, d);
 
-    // It should be that func1(5) == func2(5,3).
+    // func1(5) should equal func2(5,3).
     EXPECT_EQ(func2.Value(Vector2(5, 3)), func1.Value(5));
 
-    // It should be that func1(-7) == func2(-7,3).
+    // func1(-7) should equal func2(-7,3).
     EXPECT_EQ(func2.Value(Vector2(-7, 3)), func1.Value(-7));
   }
 
   {
-    // Create a linear function toward direction (1,-1) from point (0,3) for a bivariate quartic function QuarticFunction2A.
+    // For the bivariate quartic function QuarticFunction2A, create a linear function starting from point (0,3) in the direction of (1,-1).
     QuarticFunction2A func2;
     Vector2 x(0, 3);
     Vector2 d(1, -1);
     DirectionAdapterFunction2<QuarticFunction2A> func1(func2, x, d);
 
-    // It should be that func1(2) == func2(2,1).
+    // func1(2) should equal func2(2,1).
     EXPECT_EQ(func2.Value(Vector2(2, 1)), func1.Value(2));
 
-    // It should be that func1(-7) == func2(-7,10).
+    // func1(-7) should equal func2(-7,10).
     EXPECT_EQ(func2.Value(Vector2(-7, 10)), func1.Value(-7));
   }
 }

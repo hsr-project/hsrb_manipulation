@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2025 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -39,7 +39,7 @@ const std::vector<std::string> kUseJointNames = {
 
 namespace hsrb_ik_solver_node {
 
-// Solve IK based on target hand position/orientation and cart position
+// Solve IK based on the target end-effector position/orientation and the cart position
 void IkSolverPluginRobustToBasePositionErrorCommon::SolveIkImpl(
     const Eigen::Affine3d& origin_to_hand_goal,
     __attribute__((unused)) const tmc_manipulation_types::JointState& initial_joint_state,
@@ -48,8 +48,10 @@ void IkSolverPluginRobustToBasePositionErrorCommon::SolveIkImpl(
     double base_pos_y,
     std::vector<tmc_ik_solver_node::IkResult>& results_out) {
   tmc_robot_kinematics_model::IKRequest req(tmc_manipulation_types::kRotationZ);
-  req.frame_name = kHandName;
-  req.frame_to_end = Eigen::Affine3d::Identity();
+  req.target_frames.resize(1);
+  req.target_frames[0].frame_name = kHandName;
+  req.target_frames[0].frame_to_end = Eigen::Affine3d::Identity();
+  req.target_frames[0].ref_origin_to_end = origin_to_hand_goal;
   req.initial_angle.name = kUseJointNames;
   req.initial_angle.position.resize(kUseJointNames.size());
   req.initial_angle.position.fill(0.0);
@@ -57,7 +59,6 @@ void IkSolverPluginRobustToBasePositionErrorCommon::SolveIkImpl(
   // TODO(Takeshita) hsrb_analytic_ikが，サイズ8のweightを求めるという仕様，変なので，どうにかする
   req.weight.resize(8);
   req.weight.fill(1.0);
-  req.ref_origin_to_end = origin_to_hand_goal;
   req.use_joints = kUseJointNames;
 
   std::vector<tmc_robot_kinematics_model::IKResponse> responses;
@@ -83,7 +84,7 @@ std::vector<std::string> IkSolverPluginRobustToBasePositionErrorCommon::GetJoint
 HsrbIkSolverPluginRobustToBasePositionError::HsrbIkSolverPluginRobustToBasePositionError()
     : IkSolverPluginRobustToBasePositionErrorCommon(std::make_shared<hsrb_analytic_ik::HsrbBaseYawIKSolver>()) {}
 
-// Calculate the range of potential cart positions based on target hand position/orientation
+// Calculate the range of candidate cart positions based on the target end-effector position/orientation
 bool HsrbIkSolverPluginRobustToBasePositionError::CalculateBaseCandidateMapSize(
     const Eigen::Affine3d& origin_to_hand_goal,
     std::array<double, 2>& center_out,
@@ -100,7 +101,7 @@ bool HsrbIkSolverPluginRobustToBasePositionError::CalculateBaseCandidateMapSize(
 HsrcIkSolverPluginRobustToBasePositionError::HsrcIkSolverPluginRobustToBasePositionError()
     : IkSolverPluginRobustToBasePositionErrorCommon(std::make_shared<hsrb_analytic_ik::HsrcBaseYawIKSolver>()) {}
 
-// Calculate the range of potential cart positions based on target hand position/orientation
+// Calculate the range of candidate cart positions based on the target end-effector position/orientation
 bool HsrcIkSolverPluginRobustToBasePositionError::CalculateBaseCandidateMapSize(
     const Eigen::Affine3d& origin_to_hand_goal,
     std::array<double, 2>& center_out,

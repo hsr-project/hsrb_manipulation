@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test for the class that performs bidirectional golden section line search
+/// @brief Test class for bidirectional golden section line search method
 #include <gtest/gtest.h>
 
 #include "bi_golden_section_line_search.hpp"
@@ -36,13 +36,13 @@ namespace opt {
 //// Test with quadratic function A
 
 /**
- * Test whether the same result is obtained for the quadratic function QuadraticFunction1A as in the unidirectional case.
+ * Test if the same result is obtained for the unidirectional case with the quadratic function QuadraticFunction1A.
  */
 TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
   int maxItor = 100;
   double epsilon = 1e-8;
 
-  // Search with the initial step length of 0.1. The solution will be x=1.
+  // Search with an initial step length of 0.1. The solution is x=1.
   {
     QuadraticFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -52,20 +52,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 0.5. The solution will be x=1.
+  // Search with an initial step length of 0.5. The solution is x=1.
   {
     QuadraticFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -75,20 +75,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 1.0. The solution will be x=1.
+  // Search with an initial step length of 1.0. The solution is x=1.
   {
     QuadraticFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -98,20 +98,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 2.0. The solution will be x=1.
+  // Search with an initial step length of 2.0. The solution is x=1.
   {
     QuadraticFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -121,20 +121,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 100.0. The solution will be x=1.
+  // Search with an initial step length of 100.0. The solution is x=1.
   {
     QuadraticFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -144,20 +144,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 0.01. The solution will be x=1.
+  // Search with an initial step length of 0.01. The solution is x=1.
   {
     QuadraticFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -167,21 +167,21 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Test with a quadratic function where the minimum is at x=-1.
-  // Search with the initial step length of 0.1.
+  // Test with a quadratic function that has a minimum at x=-1.
+  // Search with an initial step length of 0.1.
   {
     ShiftAdapterFunction1<QuadraticFunction1A> func(QuadraticFunction1A(), -2.0);
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -191,15 +191,15 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
@@ -209,13 +209,13 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1A_Test) {
 //// Test with quadratic function B
 
 /**
- * Test whether the same result is obtained for the quadratic function QuadraticFunction1B as in the unidirectional case.
+ * Test if the same result is obtained for the unidirectional case with the quadratic function QuadraticFunction1B.
  */
 TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
   int maxItor = 100;
   double epsilon = 1e-8;
 
-  // Search with the initial step length of 0.1. The solution will be x=-1.
+  // Search with an initial step length of 0.1. The solution is x=-1.
   {
     QuadraticFunction1B func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -225,20 +225,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 0.5. The solution will be x=-1.
+  // Search with an initial step length of 0.5. The solution is x=-1.
   {
     QuadraticFunction1B func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -248,20 +248,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 1.0. The solution will be x=-1.
+  // Search with an initial step length of 1.0. The solution is x=-1.
   {
     QuadraticFunction1B func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -271,20 +271,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 2.0. The solution will be x=-1.
+  // Search with an initial step length of 2.0. The solution is x=-1.
   {
     QuadraticFunction1B func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -294,20 +294,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 100.0. The solution will be x=-1.
+  // Search with an initial step length of 100.0. The solution is x=-1.
   {
     QuadraticFunction1B func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -317,20 +317,20 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 0.01. The solution will be x=-1.
+  // Search with an initial step length of 0.01. The solution is x=-1.
   {
     QuadraticFunction1B func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -340,21 +340,21 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Test with a quadratic function where the minimum is at x=2.
-  // Search with the initial step length of 0.1.
+  // Test with a quadratic function that has a minimum at x=2.
+  // Search with an initial step length of 0.1.
   {
     ShiftAdapterFunction1<QuadraticFunction1B> func(QuadraticFunction1B(), 3.0);
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -364,31 +364,31 @@ TEST(BiGoldenSectionLineSearch_Test, QuadraticFunction1B_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test with non-differential function
+//// Test with a non-differentiable function
 
 TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
   int maxItor = 100;
   double epsilon = 1e-8;
 
-  // Search with the initial step length of 0.1. The solution will be x=1.
+  // Search with an initial step length of 0.1. The solution is x=1.
   {
-    // Use a function shifted by +2 from NonDifferentialFunction1A.
-    // Has a minimum at x=1.
+    // Use a function that shifts NonDiffenrentialFunction1A by +2.
+    // The minimum value is at x=1.
     ShiftAdapterFunction1<NonDiffenrentialFunction1A> func(NonDiffenrentialFunction1A(), +2.0);
     BiGoldenSectionLineSearch search(maxItor, epsilon);
     double step = 0.1;
@@ -397,23 +397,23 @@ TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 0.5. The solution will be x=1.
+  // Search with an initial step length of 0.5. The solution is x=1.
   {
-    // Use a function shifted by +2 from NonDifferentialFunction1A.
-    // Has a minimum at x=1.
+    // Use a function that shifts NonDiffenrentialFunction1A by +2.
+    // The minimum value is at x=1.
     ShiftAdapterFunction1<NonDiffenrentialFunction1A> func(
                                                            NonDiffenrentialFunction1A(),
                                                            +2.0);
@@ -424,23 +424,23 @@ TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 1.0. The solution will be x=1.
+  // Search with an initial step length of 1.0. The solution is x=1.
   {
-    // Use a function shifted by +2 from NonDifferentialFunction1A.
-    // Has a minimum at x=1.
+    // Use a function that shifts NonDiffenrentialFunction1A by +2.
+    // The minimum value is at x=1.
     ShiftAdapterFunction1<NonDiffenrentialFunction1A> func(
                                                            NonDiffenrentialFunction1A(),
                                                            +2.0);
@@ -451,23 +451,23 @@ TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 2.0. The solution will be x=1.
+  // Search with an initial step length of 2.0. The solution is x=1.
   {
-    // Use a function shifted by +2 from NonDifferentialFunction1A.
-    // Has a minimum at x=1.
+    // Use a function that shifts NonDiffenrentialFunction1A by +2.
+    // The minimum value is at x=1.
     ShiftAdapterFunction1<NonDiffenrentialFunction1A> func(
                                                            NonDiffenrentialFunction1A(),
                                                            +2.0);
@@ -478,23 +478,23 @@ TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 100.0. The solution will be x=1.
+  // Search with an initial step length of 100.0. The solution is x=1.
   {
-    // Use a function shifted by +2 from NonDifferentialFunction1A.
-    // Has a minimum at x=1.
+    // Use a function that shifts NonDiffenrentialFunction1A by +2.
+    // The minimum value is at x=1.
     ShiftAdapterFunction1<NonDiffenrentialFunction1A> func(
                                                            NonDiffenrentialFunction1A(),
                                                            +2.0);
@@ -505,23 +505,23 @@ TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 
-  // Search with the initial step length of 0.01. The solution will be x=1.
+  // Search with an initial step length of 0.01. The solution is x=1.
   {
-    // Use a function shifted by +2 from NonDifferentialFunction1A.
-    // Has a minimum at x=1.
+    // Use a function that shifts NonDiffenrentialFunction1A by +2.
+    // The minimum value is at x=1.
     ShiftAdapterFunction1<NonDiffenrentialFunction1A> func(
                                                            NonDiffenrentialFunction1A(),
                                                            +2.0);
@@ -532,28 +532,28 @@ TEST(BiGoldenSectionLineSearch_Test, NonDiffenrentialFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_NEAR(solution, expected, epsilon * 10);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Test with inverse trapezoidal function
+//// Test with an inverted trapezoidal function
 
 TEST(BiGoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
   int maxItor = 100;
   double epsilon = 1e-8;
 
-  // Search with the initial step length of 0.1. The solution will be in the range x∈[-1,2].
+  // Search with an initial step length of 0.1. The solution is x∈[-1,2].
   {
     InvertedTrapeziumFunction1A func;
     BiGoldenSectionLineSearch search(maxItor, epsilon);
@@ -565,25 +565,25 @@ TEST(BiGoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution
                 && solution <= expected2 + epsilon);
   }
 
-  // Search with the initial step length of 0.1. The solution will be in the range x∈[1,4].
+  // Search with an initial step length of 0.1. The solution is x∈[1,4].
   {
-    // Shift the inverse trapezoidal function by +2.
-    // Takes a minimum in the range x∈[1,4].
+    // Shift the inverted trapezoidal function by +2.
+    // The minimum value is at x∈[1,4].
     ShiftAdapterFunction1<InvertedTrapeziumFunction1A> func(InvertedTrapeziumFunction1A(), +2.0);
     BiGoldenSectionLineSearch search(maxItor, epsilon);
 
@@ -594,25 +594,25 @@ TEST(BiGoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution
                 && solution <= expected2 + epsilon);
   }
 
-  // Search with the initial step length of 100. The solution will be in the range x∈[1,4].
+  // Search with an initial step length of 100. The solution is x∈[1,4].
   {
-    // Shift the inverse trapezoidal function by +2.
-    // Takes a minimum in the range x∈[1,4].
+    // Shift the inverted trapezoidal function by +2.
+    // The minimum value is at x∈[1,4].
     ShiftAdapterFunction1<InvertedTrapeziumFunction1A> func(
                                                             InvertedTrapeziumFunction1A(),
                                                             +2.0);
@@ -625,15 +625,15 @@ TEST(BiGoldenSectionLineSearch_Test, InvertedTrapeziumFunction1A_Test) {
     // Perform the search.
     OptResult result = search.Search(func, step);
 
-    // Validate the search results.
+    // Verify the search results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Validate the number of iterations.
+    // Verify the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(1 <= iteration && iteration <= maxItor);
 
-    // Validate the solution.
+    // Verify the solution.
     double solution = search.solution();
     EXPECT_TRUE(
                 expected1 - epsilon <= solution

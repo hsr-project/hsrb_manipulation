@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Class for executing the golden section line search method
+/// @brief Class for performing the golden section line search method
 #ifndef HSRB_ANALYTIC_IK_GOLDEN_SECTION_LINE_SEARCH_HPP_
 #define HSRB_ANALYTIC_IK_GOLDEN_SECTION_LINE_SEARCH_HPP_
 
@@ -34,7 +34,7 @@ DAMAGE.
 namespace opt {
 
 /**
- * This class performs the golden section line search method.
+ * This is a class for performing the golden section line search method.
  */
 class GoldenSectionLineSearch {
  public:
@@ -52,56 +52,56 @@ class GoldenSectionLineSearch {
   /**
    * Performs the search.
    *
-   * If the single variable function f is strictly convex in the search interval [a, b],
-   * it converges to the minimum value through the search.
+   * If the single-variable function f is strictly convex in the search interval [a, b],
+   * The search will converge to the minimum value.
    *
-   * If non-strict convexity is detected during the search, the search fails and returns OptFail.
-   * However, failure may not always be detected, and in such cases, a local solution is obtained.
+   * If strict convexity is detected as violated during the search, the search fails and returns OptFail.
+   * However, detection is not guaranteed, and if not detected, a local solution is obtained.
    *
-   * @param	f		The single variable function
+   * @param	f		Single-variable function
    * @param	a		Lower bound of the search interval [a, b]
    * @param	b		Upper bound of the search interval [a, b]
    * @param	maxItor	Maximum number of iterations
-   * @param	epsilon	Convergence criterion. It is considered converged if the width of the uncertain interval is below this value.
+   * @param	epsilon	Convergence criterion. If the width of the uncertain interval becomes less than this value, it is considered converged.
    * @return
    */
   template<class Function1>
   OptResult Search(Function1& f, double a, double b) {
-    // Initializes the search results.
+    // Initialize the search results.
     result_ = OptFail;
     iteration_ = 0;
     solution_ = 0;
     value_ = 0;
 
-    // Initializes the uncertain interval.
+    // Initialize the uncertain interval.
     double a_k = a;
     double b_k = b;
 
-    // Calculates the function values f_a_k, f_b_k at the endpoints a_k, b_k of the uncertain interval.
+    // Calculate the function values f_a_k, f_b_k at the endpoints a_k, b_k of the uncertain interval.
     double f_a_k = f.Value(a_k);
     double f_b_k = f.Value(b_k);
 
-    // Sets the golden ratio.
+    // Set the golden ratio.
     const double _alpha = 0.61803398874989484820458683436563811772;
 
-    // Selects the evaluation points s_k, t_k within the uncertain interval [a_k, b_k].
+    // Select the evaluation points s_k, t_k within the uncertain interval [a_k, b_k].
     double s_k = a_k + (1 - _alpha) * (b_k - a_k);
     double t_k = a_k + _alpha * (b_k - a_k);
 
-    // Calculates the function values f_s_k, f_t_k at the evaluation points s_k, t_k.
+    // Calculate the function values f_s_k, f_t_k at the evaluation points s_k, t_k.
     double f_s_k = f.Value(s_k);
     double f_t_k = f.Value(t_k);
 
-    // Repeats iteration k.
+    // Repeat iteration k.
     for (int k = 1; k <= max_iteration_; k++) {
-      // Flag for selecting [a_k, t_k] as the next uncertain interval when true,
-      // and [s_k, b_k] when false.
+      // Flag indicating whether to select [a_k, t_k] as the next uncertain interval (true),
+      // or [s_k, b_k] (false).
       bool left = (f_a_k <= f_s_k && f_a_k <= f_t_k && f_a_k <= f_b_k)
                || (f_s_k <= f_a_k && f_s_k <= f_t_k && f_s_k <= f_b_k);
 
-      // Determines the next uncertain interval.
+      // Determine the next uncertain interval.
       if (left) {
-        // Keeps a_k as is.
+        // a_k remains unchanged.
         b_k = t_k;
         f_b_k = f_t_k;
         t_k = s_k;
@@ -109,7 +109,7 @@ class GoldenSectionLineSearch {
         s_k = a_k + (1 - _alpha) * (b_k - a_k);
         f_s_k = f.Value(s_k);
       } else {
-        // Keeps b_k as is.
+        // b_k remains unchanged.
         a_k = s_k;
         f_a_k = f_s_k;
         s_k = t_k;
@@ -118,7 +118,7 @@ class GoldenSectionLineSearch {
         f_t_k = f.Value(t_k);
       }
 
-      // Evaluates the convergence criterion.
+      // Evaluate the convergence criterion.
       if (b_k - a_k <= epsilon_) {
         result_ = OptSuccess;
         iteration_ = k;
@@ -147,42 +147,42 @@ class GoldenSectionLineSearch {
   }
 
   /**
-   * Sets the maximum number of iterations.
+   * Set the maximum number of iterations.
    */
   void set_max_iteration(int max_iteration) {
     max_iteration_ = max_iteration;
   }
 
   /**
-   * Sets the convergence criteria.
+   * Set the convergence criterion.
    */
   void set_epsilon(double epsilon) {
     epsilon_ = epsilon;
   }
 
   /**
-   * Retrieves the search results.
+   * Retrieve the search results.
    */
   OptResult result() const {
     return result_;
   }
 
   /**
-   * Retrieves the number of iterations required for the search.
+   * Retrieve the number of iterations taken during the search.
    */
   int iteration() const {
     return iteration_;
   }
 
   /**
-   * Retrieves the solution after the search.
+   * Retrieve the solution after the search.
    */
   double solution() const {
     return solution_;
   }
 
   /**
-   * Retrieves the objective function value after the search.
+   * Retrieve the objective function value after the search.
    */
   double value() const {
     return value_;
@@ -207,7 +207,7 @@ class GoldenSectionLineSearch {
   OptResult result_;
 
   /**
-   * Holds the number of iterations required for the search.
+   * Holds the number of iterations taken during the search.
    */
   int iteration_;
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2025 TOYOTA MOTOR CORPORATION
+# Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the disclaimer
@@ -50,7 +50,7 @@ def declare_arguments():
                                                     description='Collision config with the robot.'))
 
     declared_arguments.append(DeclareLaunchArgument('runtime_config_package', default_value='hsrb_rviz_simulator',
-                                                    description='Package with the controller\'s configuration.'))
+                                                    description="Package with the controller's configuration."))
     declared_arguments.append(DeclareLaunchArgument('controllers_file', default_value='controllers.yaml',
                                                     description='YAML file with the controllers configuration.'))
 

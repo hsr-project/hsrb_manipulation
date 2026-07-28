@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test for 2D vector class
+/// @brief Test for the 2D vector class
 #include <gtest/gtest.h>
 
 #include "vector2.hpp"
@@ -38,36 +38,36 @@ TEST(Vector2_Test, test1) {
   EXPECT_EQ(3, v.v1);
   EXPECT_EQ(4, v.v2);
 
-  // Test for Set function
+  // Test for the Set function
   v.Set(9, 8);
   EXPECT_EQ(9, v.v1);
   EXPECT_EQ(8, v.v2);
 
-  // Test for Zero function
+  // Test for the Zero function
   v.Zero();
   EXPECT_EQ(0, v.v1);
   EXPECT_EQ(0, v.v2);
 
-  // Test for Norm function
+  // Test for the Norm function
   v.Set(2, -1);
   EXPECT_EQ(std::sqrt(5.), v.Norm());
 
-  // Test for Norm2 function
+  // Test for the Norm2 function
   EXPECT_EQ(5, v.Norm2());
 
-  // Test for Normalize function
+  // Test for the Normalize function
   v.Normalize();
   EXPECT_EQ(2 / std::sqrt(5.), v.v1);
   EXPECT_EQ(-1 / std::sqrt(5.), v.v2);
 
-  // Test for Norm static function
+  // Test for the Norm static function
   {
     Vector2 a(10, 20);
     Vector2 b(10 + 2, 20 - 1);
     EXPECT_EQ(std::sqrt(5.), Vector2::Norm(a, b));
   }
 
-  // Test for Mid static function
+  // Test for the Mid static function
   {
     Vector2 a(10, 20);
     Vector2 b(10 + 2, 20 - 1);
@@ -76,14 +76,14 @@ TEST(Vector2_Test, test1) {
     EXPECT_EQ(19.5, c.v2);
   }
 
-  // Test for Dot static function
+  // Test for the Dot static function
   {
     Vector2 a(1, 2);
     Vector2 b(-3, -4);
     EXPECT_EQ(-11, Vector2::Dot(a, b));
   }
 
-  // Test for + operator
+  // Test for the + operator
   {
     Vector2 a(-1, 2);
     Vector2 b(3, -5);
@@ -92,7 +92,7 @@ TEST(Vector2_Test, test1) {
     EXPECT_EQ(-3, c.v2);
   }
 
-  // Test for - operator
+  // Test for the - operator
   {
     Vector2 a(-1, 2);
     Vector2 b(3, -5);
@@ -101,7 +101,7 @@ TEST(Vector2_Test, test1) {
     EXPECT_EQ(7, c.v2);
   }
 
-  // Test for unary - operator
+  // Test for the unary - operator
   {
     Vector2 a(-1, 2);
     Vector2 c = -a;
@@ -109,7 +109,7 @@ TEST(Vector2_Test, test1) {
     EXPECT_EQ(-2, c.v2);
   }
 
-  // Test for * operator (scalar × vector)
+  // Test for the * operator (scalar × vector)
   {
     Vector2 a(-1, 2);
     Vector2 c = 0.5 * a;
@@ -117,7 +117,7 @@ TEST(Vector2_Test, test1) {
     EXPECT_EQ(1.0, c.v2);
   }
 
-  // Test for * operator (vector × scalar)
+  // Test for the * operator (vector × scalar)
   {
     Vector2 a(-1, 2);
     Vector2 c = a * 0.5;
@@ -125,7 +125,7 @@ TEST(Vector2_Test, test1) {
     EXPECT_EQ(1.0, c.v2);
   }
 
-  // Test for / operator (vector / scalar)
+  // Test for the / operator (vector / scalar)
   {
     Vector2 a(-1, 2);
     Vector2 c = a / 2;

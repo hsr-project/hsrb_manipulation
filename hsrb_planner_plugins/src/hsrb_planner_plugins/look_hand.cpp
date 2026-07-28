@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Plugin for observing the tip during orbit planning for HSR-B
+/// @brief Plugin to observe the end-effector during trajectory planning for HSR-B
 
 #include "look_hand.hpp"
 
@@ -36,7 +36,7 @@ DAMAGE.
 #include <hsr_kinematics/head_kinematics.hpp>
 
 namespace {
-// Tip frame name
+// End-effector frame name
 const char* const kHandFrameID = "hand_palm_link";
 // Camera frame name
 const char* const kCameraFrameID = "head_l_stereo_camera_link";
@@ -49,13 +49,13 @@ const char* const kHeadPitchJointID = "head_tilt_joint";
 
 namespace hsrb_planner_plugins {
 
-// Function to modify joints
+// Function to adjust joints
 bool LookHand::Constrain(
     const std::vector<std::string>& use_joints,
     const tmc_robot_kinematics_model::IRobotKinematicsModel::Ptr& robot,
     const tmc_rplanner::Config& config_in,
     tmc_rplanner::Config& config_out) {
-  // Check if necessary joint angles are included
+  // Check if the required joint angles are included
   std::vector<std::string>::const_iterator yaw_joint_it(
       std::find(use_joints.begin(), use_joints.end(), kHeadYawJointID));
   if (yaw_joint_it == use_joints.end()) {
@@ -67,24 +67,24 @@ bool LookHand::Constrain(
     return false;
   }
 
-  // Check if sufficient config is available
+  // Check if it has sufficient configuration
   if (config_in.size() < use_joints.size()) {
     return false;
   }
 
   try {
-    // Change the posture of the robot model
+    // Modify the robot model's posture
     tmc_manipulation_types::JointState current_state;
     current_state.name = use_joints;
     current_state.position = config_in.block(0, 0, use_joints.size(), 1);
     robot->SetNamedAngle(current_state);
 
-    // Acquire target (tip) position
-    // The base here means the origin of the space, specification of HsrHeadKinematics
+    // Obtain the target (end-effector) position
+    // Here, 'base' means the origin of the space, as per the HsrHeadKinematics specification
     Eigen::Translation3d base_to_hand(
         robot->GetObjectTransform(kHandFrameID).translation());
 
-    // Prepare a class for calculating head posture
+    // Prepare the class for calculating head posture
     std::vector<std::string> head_joint_names;
     head_joint_names.push_back(kHeadYawJointID);
     head_joint_names.push_back(kHeadPitchJointID);

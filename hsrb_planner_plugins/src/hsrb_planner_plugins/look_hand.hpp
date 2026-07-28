@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Plugin for viewing the end effector during orbit planning for HSR-B
+/// @brief Plugin to observe the end-effector during trajectory planning for HSR-B
 #ifndef HSRB_PLANNER_PLUGINS_LOOK_HAND_HPP_
 #define HSRB_PLANNER_PLUGINS_LOOK_HAND_HPP_
 
@@ -36,7 +36,7 @@ DAMAGE.
 
 namespace hsrb_planner_plugins {
 
-/// Plugin for viewing the end effector during orbit planning for HSR-B
+/// Plugin to observe the end-effector during trajectory planning for HSR-B
 class LookHand : public tmc_robot_planner::IConfigurationConstraint {
  public:
   /// Constructor
@@ -44,7 +44,7 @@ class LookHand : public tmc_robot_planner::IConfigurationConstraint {
   /// Destructor
   ~LookHand() {}
 
-  /// Function to modify the joint
+  /// Function to modify joints
   virtual bool Constrain(
       const std::vector<std::string>& use_joints,
       const tmc_robot_kinematics_model::IRobotKinematicsModel::Ptr& robot,

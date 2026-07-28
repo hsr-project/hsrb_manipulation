@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2025 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -67,8 +67,8 @@ void IkSolverPluginTest<SolverType>::SetUp() {
   const auto robot_description = tmc_manipulation_tests::hsrb::GetUrdf();
   const auto robot_collision_pair = tmc_manipulation_tests::hsrb::GetCollisionConfig();
 
-  // Since the model uses HSR-B, it doesn't strictly match with HSR-C
-  // However, the error is manageable if kEpsilon is set to 2.0e-2, so I will choose not to try hard
+  // Since we are using the HSR-B model, it does not strictly match with HSR-C.
+  // However, the error can be contained by setting kEpsilon to 2.0e-2, so we won't push too hard.
   collision_detector_ = std::make_shared<tmc_robot_collision_detector::RobotCollisionDetector>(
       robot_description, robot_collision_pair, "ODE");
 }
@@ -80,8 +80,8 @@ TYPED_TEST(IkSolverPluginTest, SolveIk) {
   const auto solver = std::make_shared<TypeParam>();
   EXPECT_TRUE(solver->Init(node));
 
-  // Just hitting the outer interface only allows for checking whether it yields a seemingly correct solution
-  // It doesn't really make much sense as a test, but I'll run the software anyway
+  // If we only hit the outer interface, we can only check whether the solution looks plausible.
+  // It doesn't make much sense as a test, but we'll run the software anyway.
   std::vector<tmc_manipulation_msgs::msg::IkResult> results;
   solver->SolveIk(Eigen::Translation3d(0.0, 0.0, 1.0) * Eigen::Quaterniond(0.707, 0.0, 0.707, 0.0),
                   tmc_manipulation_types::OccupancyGrid(),

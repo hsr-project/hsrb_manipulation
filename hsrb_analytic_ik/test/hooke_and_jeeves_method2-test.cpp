@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test of a class performing optimization using the Hooke-and-Jeeves method
+/// @brief Test class for optimization using the Hooke-and-Jeeves method
 #include <gtest/gtest.h>
 
 #include "bi_golden_section_line_search.hpp"
@@ -41,116 +41,116 @@ TEST(HookeAndJeevesMethod2_Test, QuadraticFunction1A_Test) {
   HookeAndJeevesMethod2 search(maxItor, epsilon);
   QuarticFunction2A func;
 
-  // Explore with Step 1.0.
+  // Explore with step 1.0.
   {
     double step = 1.0;
     Vector2 x0(0, 3);
     Vector2 expected(2, 1);
 
-    // Perform the exploration.
+    // Perform exploration.
     OptResult result = search.Search(func, lineSearch, x0, step);
 
-    // Verify the exploration results.
+    // Validate exploration results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Verify the number of iterations.
+    // Validate the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Verify the solution.
+    // Validate the solution.
     Vector2 solution = search.solution();
     EXPECT_NEAR(expected.v1, solution.v1, epsilon * 10);
     EXPECT_NEAR(expected.v2, solution.v2, epsilon * 10);
   }
 
-  // Explore with Step 0.1.
+  // Explore with step 0.1.
   {
     double step = 0.1;
     Vector2 x0(0, 3);
     Vector2 expected(2, 1);
 
-    // Perform the exploration.
+    // Perform exploration.
     OptResult result = search.Search(func, lineSearch, x0, step);
 
-    // Verify the exploration results.
+    // Validate exploration results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Verify the number of iterations.
+    // Validate the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Verify the solution.
+    // Validate the solution.
     Vector2 solution = search.solution();
     EXPECT_NEAR(expected.v1, solution.v1, epsilon * 10);
     EXPECT_NEAR(expected.v2, solution.v2, epsilon * 10);
   }
 
-  // Explore with Step 0.01.
+  // Explore with step 0.01.
   {
     double step = 0.01;
     Vector2 x0(0, 3);
     Vector2 expected(2, 1);
 
-    // Perform the exploration.
+    // Perform exploration.
     OptResult result = search.Search(func, lineSearch, x0, step);
 
-    // Verify the exploration results.
+    // Validate exploration results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Verify the number of iterations.
+    // Validate the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Verify the solution.
+    // Validate the solution.
     Vector2 solution = search.solution();
     EXPECT_NEAR(expected.v1, solution.v1, epsilon * 10);
     EXPECT_NEAR(expected.v2, solution.v2, epsilon * 10);
   }
 
-  // Explore with Step 10.
+  // Explore with step 10.
   {
     double step = 10;
     Vector2 x0(0, 3);
     Vector2 expected(2, 1);
 
-    // Perform the exploration.
+    // Perform exploration.
     OptResult result = search.Search(func, lineSearch, x0, step);
 
-    // Verify the exploration results.
+    // Validate exploration results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Verify the number of iterations.
+    // Validate the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Verify the solution.
+    // Validate the solution.
     Vector2 solution = search.solution();
     EXPECT_NEAR(expected.v1, solution.v1, epsilon * 10);
     EXPECT_NEAR(expected.v2, solution.v2, epsilon * 10);
   }
 
-  // Explore with Step 100.
+  // Explore with step 100.
   {
     double step = 100;
     Vector2 x0(0, 3);
     Vector2 expected(2, 1);
 
-    // Perform the exploration.
+    // Perform exploration.
     OptResult result = search.Search(func, lineSearch, x0, step);
 
-    // Verify the exploration results.
+    // Validate exploration results.
     EXPECT_EQ(OptSuccess, result);
     EXPECT_EQ(OptSuccess, search.result());
 
-    // Verify the number of iterations.
+    // Validate the number of iterations.
     int iteration = search.iteration();
     EXPECT_TRUE(0 <= iteration && iteration <= maxItor);
 
-    // Verify the solution.
+    // Validate the solution.
     Vector2 solution = search.solution();
     EXPECT_NEAR(expected.v1, solution.v1, epsilon * 10);
     EXPECT_NEAR(expected.v2, solution.v2, epsilon * 10);

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -59,9 +59,9 @@ class TestDriver {
     }
   }
 
-  // Test with random target values, ensuring there is always a solution
+  // Test with random target values, but ensure all have solutions
   void RunRandomTest() {
-    // Restrict to one test in CI due to long test duration
+    // Limit to one test in CI due to long test duration
     // this->RunTest("joint_configs/random_config1.dat", "joint_configs/init_config.dat");
     // this->RunTest("joint_configs/random_config2.dat", "joint_configs/init_config.dat");
     // this->RunTest("joint_configs/random_config3.dat", "joint_configs/init_config.dat");
@@ -74,24 +74,24 @@ class TestDriver {
     this->RunTest("joint_configs/random_config10.dat", "joint_configs/init_config.dat");
   }
 
-  // Test with joint angle limit target values, ensuring there is always a solution
+  // Test with joint angle limit target values, but ensure all have solutions
   void RunLimitTest(const std::string& config_file) {
     this->RunTest(config_file, "joint_configs/small_init_config.dat");
   }
 
-  // Test with singular target values, ensuring there is always a solution
+  // Test with singular target values, but ensure all have solutions
   void RunSingularTest() {
     this->RunTest("joint_configs/singular_config.dat", "joint_configs/small_init_config.dat");
   }
 
-  // Test with target values that have no solution, which will fail
+  // Test with unsolvable target values that should fail
   void RunUnSolveTest() {
     std::vector<Eigen::VectorXd> init_configs;
     LoadDataFile("joint_configs/small_init_config.dat", init_configs);
 
     // Loop through initial value patterns
     for (const auto& init_config : init_configs) {
-      // z = 2m is unreachable
+      // z = 2m is out of reach
       auto ref_origin_to_hand = Eigen::Affine3d::Identity();
       ref_origin_to_hand.translation().z() += 2.0;
 
@@ -181,47 +181,47 @@ TEST_F(HsrcBaseYawIKSolverTest, LimitTest) { test_driver_->RunLimitTest("joint_c
 TEST_F(HsrcBaseYawIKSolverTest, SingularTest) { test_driver_->RunSingularTest(); }
 TEST_F(HsrcBaseYawIKSolverTest, UnSolveTest) { test_driver_->RunUnSolveTest(); }
 
-// Test for obtaining multiple solutions, focusing on HSR-B as a representative example
+// Test if multiple solutions can be obtained, using HSR-B as a representative example
 TEST(HsrbBaseYawIKSolverMultiSolutionTest, MultiSolution) {
   const auto robot_description = tmc_manipulation_tests::hsrb::GetUrdf();
   auto driver = std::make_shared<IKTestDriver>(robot_description, tmc_manipulation_types::kRotationZ);
 
   auto solver = std::make_shared<hsrb_analytic_ik::HsrbBaseYawIKSolver>();
 
-  // Although there can be up to 4 solutions, relevant end-effector positions and orientations are included
+  // Although the maximum number of solutions is 4, target end-effector positions and orientations likely to yield 4 solutions are included
   MultiSolutionTest(Eigen::Translation3d(0.6, 0.07, 0.6) * Eigen::Quaterniond(0.0, 0.707, 0.0, 0.707),
                     4, driver, solver);
 }
 
-// Calculate the range of mobile base positions, HSR-B
+// Calculation of cart position range, HSR-B
 TEST(BasePositionRangeTest, GetHsrbBasePositionRange) {
-  // Test data is created by viewing the robot model in rviz, allowing for centimeter-level deviations
+  // Test data is created while viewing the robot model in rviz, so deviations in the range of centimeters are allowed
   constexpr double kEpsilon = 1.0e-2;
   constexpr double kCenterX = -0.14;
   constexpr double kCenterY = 0.0;
   // End-effector in a horizontal posture
   const auto rot = Eigen::Quaterniond(0.0, 0.707, 0.0, 0.707);
   {
-    // Too high to have a solution; a negative radius value indicates no solution
+    // Too high to have a solution; if no solution exists, a negative value is assigned to the radius
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 1.4) * rot);
     EXPECT_LT(range.radius_min, 0.0);
   }
   {
-    // Too low to have a solution; a negative radius value indicates no solution
+    // Too low to have a solution; if no solution exists, a negative value is assigned to the radius
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.0) * rot);
     EXPECT_LT(range.radius_min, 0.0);
   }
   {
-    // When aiming to place the mobile base as far as possible, it's too low to stretch out the arm straight
+    // When trying to place the cart as far as possible, the arm cannot be fully extended due to being too low
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.1) * rot);
-    // Check only twice since the posture is the same but height varies, results should be consistent
+    // Check only twice; since the posture is the same but the height differs, the values should be the same each time
     EXPECT_NEAR(range.center[0], kCenterX, kEpsilon);
     EXPECT_NEAR(range.center[1], kCenterY, kEpsilon);
     EXPECT_NEAR(range.radius_max, 0.40, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // Height at which the arm can be stretched out horizontally when aiming to place the mobile base as far as possible
+    // When trying to place the cart as far as possible, the height at which the arm can be extended straight and horizontally
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.35) * rot);
     EXPECT_NEAR(range.center[0], kCenterX, kEpsilon);
     EXPECT_NEAR(range.center[1], kCenterY, kEpsilon);
@@ -229,66 +229,66 @@ TEST(BasePositionRangeTest, GetHsrbBasePositionRange) {
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // Height at which the arm can be stretched out horizontally when aiming to place the mobile base as far as possible, version 2
+    // When trying to place the cart as far as possible, the height at which the arm can be extended straight and horizontally, part 2
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.95) * rot);
     EXPECT_NEAR(range.radius_max, 0.49, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // When aiming to place the mobile base as far as possible, it's too high to stretch out the arm straight
+    // When trying to place the cart as far as possible, the arm cannot be fully extended due to being too high
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 1.2) * rot);
     EXPECT_NEAR(range.radius_max, 0.44, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // When aiming to place the mobile base as far as possible, it's better to lower the arm to its limit
+    // When trying to place the cart as far as possible, it is better to lower the arm to its limit
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.2) * rot);
     EXPECT_NEAR(range.radius_min, 0.32, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // When aiming to place the mobile base as far as possible, lowering the lift axis and extending the arm forward is preferable
+    // When trying to place the cart as far as possible, it is better to lower the lift axis and extend the arm forward
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.55) * rot);
     EXPECT_NEAR(range.radius_min, 0.41, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // Height at which the arm can be folded when aiming to place the mobile base as far as possible
+    // When trying to place the cart as far as possible, the height at which the arm can be folded
     const auto range = GetHsrbBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.7) * rot);
     EXPECT_NEAR(range.radius_min, 0.16, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
 }
 
-// Calculate the range of mobile base positions, HSR-C
+// Calculation of cart position range, HSR-C
 TEST(BasePositionRangeTest, GetHsrcBasePositionRange) {
-  // Test data is created by viewing the robot model in rviz, allowing for centimeter-level deviations
+  // Test data is created while viewing the robot model in rviz, so deviations in the range of centimeters are allowed
   constexpr double kEpsilon = 1.0e-2;
   constexpr double kCenterX = -0.15;
   constexpr double kCenterY = 0.0;
   // End-effector in a horizontal posture
   const auto rot = Eigen::Quaterniond(0.0, 0.707, 0.0, 0.707);
   {
-    // Too high to have a solution; a negative radius value indicates no solution
+    // Too high to have a solution; if no solution exists, a negative value is assigned to the radius
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 1.4) * rot);
     EXPECT_LT(range.radius_min, 0.0);
   }
   {
-    // Too low to have a solution; a negative radius value indicates no solution
+    // Too low to have a solution; if no solution exists, a negative value is assigned to the radius
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.0) * rot);
     EXPECT_LT(range.radius_min, 0.0);
   }
   {
-    // When aiming to place the mobile base as far as possible, it's too low to stretch out the arm straight
+    // When trying to place the cart as far as possible, the arm cannot be fully extended due to being too low
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.1) * rot);
-    // Check only twice since the posture is the same but height varies, results should be consistent
+    // Check only twice; since the posture is the same but the height differs, the values should be the same each time
     EXPECT_NEAR(range.center[0], kCenterX, kEpsilon);
     EXPECT_NEAR(range.center[1], kCenterY, kEpsilon);
     EXPECT_NEAR(range.radius_max, 0.38, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // Height at which the arm can be stretched out horizontally when aiming to place the mobile base as far as possible
+    // When trying to place the cart as far as possible, the height at which the arm can be extended straight and horizontally
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.35) * rot);
     EXPECT_NEAR(range.center[0], kCenterX, kEpsilon);
     EXPECT_NEAR(range.center[1], kCenterY, kEpsilon);
@@ -296,31 +296,31 @@ TEST(BasePositionRangeTest, GetHsrcBasePositionRange) {
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // Height at which the arm can be stretched out horizontally when aiming to place the mobile base as far as possible, version 2
+    // When trying to place the cart as far as possible, the height at which the arm can be extended straight and horizontally, part 2
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.95) * rot);
     EXPECT_NEAR(range.radius_max, 0.49, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // When aiming to place the mobile base as far as possible, it's too high to stretch out the arm straight
+    // When trying to place the cart as far as possible, the arm cannot be fully extended due to being too high
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 1.2) * rot);
     EXPECT_NEAR(range.radius_max, 0.45, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // When aiming to place the mobile base as far as possible, it's better to lower the arm to its limit
+    // When trying to place the cart as far as possible, it is better to lower the arm to its limit
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.2) * rot);
     EXPECT_NEAR(range.radius_min, 0.32, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // When aiming to place the mobile base as far as possible, lowering the lift axis and extending the arm forward is preferable
+    // When trying to place the cart as far as possible, it is better to lower the lift axis and extend the arm forward
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.55) * rot);
     EXPECT_NEAR(range.radius_min, 0.43, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);
   }
   {
-    // Height at which the arm can be folded when aiming to place the mobile base as far as possible
+    // When trying to place the cart as far as possible, the height at which the arm can be folded
     const auto range = GetHsrcBasePositionRange(Eigen::Translation3d(0.0, 0.0, 0.7) * rot);
     EXPECT_NEAR(range.radius_min, 0.16, kEpsilon);
     EXPECT_LT(range.radius_min, range.radius_max);

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 TOYOTA MOTOR CORPORATION
+Copyright (c) 2026 TOYOTA MOTOR CORPORATION
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted (subject to the limitations in the disclaimer
@@ -62,7 +62,7 @@ struct Vector2 {
   }
 
   /**
-   * Makes this a zero vector.
+   * Sets to a zero vector.
    */
   void Zero() {
     v1 = 0;
@@ -79,21 +79,21 @@ struct Vector2 {
   }
 
   /**
-   * Computes the norm.
+   * Calculates the norm.
    */
   double Norm(void) {
     return std::sqrt(v1 * v1 + v2 * v2);
   }
 
   /**
-   * Computes the squared norm.
+   * Calculates the squared norm.
    */
   double Norm2(void) {
     return (v1 * v1 + v2 * v2);
   }
 
   /**
-   * Computes the norm between two points.
+   * Calculates the norm between two points.
    */
   static double Norm(const Vector2& x, const Vector2& y) {
     double d1 = x.v1 - y.v1;
@@ -102,14 +102,14 @@ struct Vector2 {
   }
 
   /**
-   * Creates the midpoint of two points.
+   * Creates the midpoint between two points.
    */
   static Vector2 Mid(const Vector2& x, const Vector2& y) {
     return Vector2((x.v1 + y.v1) * 0.5, (x.v2 + y.v2) * 0.5);
   }
 
   /**
-   * Computes the inner product x'*y.
+   * Calculates the inner product x'*y.
    */
   static double Dot(const Vector2& x, const Vector2& y) {
     return (x.v1 * y.v1 + x.v2 * y.v2);

@@ -25,7 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 */
-/// @brief Test of plugin to view hand for orbit planning for HSR-B
+/// @brief Test of the plugin that observes the end-effector during trajectory planning for HSR-B
 
 #include <string>
 #include <vector>
@@ -87,7 +87,7 @@ TEST(LookHandTest, NormalConstrain) {
   tmc_rplanner::Config result;
   EXPECT_TRUE(constrain->Constrain(use_joints, model, config, result));
 
-  // If the arm is extended horizontally straight, it should be within this range
+  // If the arm is extended straight horizontally, it should cover this range
   EXPECT_LT(0.0, result[5]);
   EXPECT_GT(0.3, result[5]);
   EXPECT_LT(-0.9, result[6]);
